@@ -1,0 +1,44 @@
+# dependencies
+node_modules
+.pnp
+.pnp.js
+
+# debug
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# local env
+.env
+.env*.local
+
+# misc
+.DS_Store
+*.pem
+
+# turbo
+.turbo
+
+# vercel
+.vercel
+
+# testing
+coverage
+**/coverage/*
+test-results
+playwright-report/
+playwright/.cache/
+__screenshots__
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+
+# editors
+.idea
+
+# build outputs
+out/
+build
+dist

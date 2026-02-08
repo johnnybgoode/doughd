@@ -1,0 +1,20 @@
+{
+  "private": true,
+  "version": "0.0.0",
+  "scripts": {
+    "build": "turbo run build",
+    "clean": "turbo run clean",
+    "dev": "turbo run dev",
+    "lint": "turbo run lint",
+    "format": "biome format --write",
+    "test": "turbo run test"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.3.14",
+    "turbo": "^2.8.3"
+  },
+  "packageManager": "pnpm@10.28.2",
+  "name": "tre-template",
+  "description": "Turborepo template with React+Express",
+  "author": "John Entwistle"
+}

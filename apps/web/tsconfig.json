@@ -1,0 +1,5 @@
+{
+  "extends": "@repo/tsconfig/web.json",
+  "include": ["src"],
+  "references": [{ "path": "./tsconfig.node.json" }]
+}

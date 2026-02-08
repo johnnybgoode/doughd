@@ -1,0 +1,21 @@
+{
+  "$schema": "../../node_modules/@biomejs/biome/configuration_schema.json",
+  "root": false,
+  "vcs": {
+    "enabled": true,
+    "clientKind": "git",
+    "useIgnoreFile": true
+  },
+
+  "files": {
+    "ignoreUnknown": false,
+    "includes": ["**", "!dist", "!build"]
+  },
+
+  "linter": {
+    "enabled": true,
+    "domains": {
+      "react": "recommended"
+    }
+  }
+}

@@ -1,0 +1,59 @@
+{
+  "name": "@repo/database",
+  "version": "1.0.0",
+  "type": "module",
+  "exports": {
+    ".": {
+      "default": "./dist/client.js",
+      "types": "./dist/client.d.ts"
+    },
+    "./schemas": {
+      "default": "./dist/schemas.js",
+      "types": "./dist/schemas.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsdown",
+    "clean": "rm -rf dist",
+    "clean:prisma": "rm -r generated",
+    "dev": "tsdown --watch",
+    "db:generate": "prisma generate",
+    "db:migrate": "pnpm dotenv:dev -- prisma migrate dev",
+    "db:migrate:deploy": "prisma migrate deploy",
+    "db:migrate:test": "pnpm dotenv:test -- prisma migrate dev",
+    "db:push": "prisma db push",
+    "db:reset": "pnpm dotenv:dev -- prisma migrate reset",
+    "db:reset:test": "pnpm dotenv:test -- prisma migrate reset",
+    "db:seed": "pnpm dotenv:dev -- tsdown src/seed.ts --onSuccess \"node dist/seed.js\"",
+    "db:up:dev": "pnpm dotenv:dev -- docker-compose -f compose.dev.yml up -d",
+    "db:up:test": "pnpm dotenv:test -- docker-compose -f compose.test.yml up -d",
+    "db:down:dev": "pnpm dotenv:dev -- docker-compose -f compose.dev.yml down",
+    "db:down:test": "pnpm dotenv:test -- docker-compose -f compose.test.yml down -v",
+    "dotenv:dev": "pnpx @dotenvx/dotenvx run",
+    "dotenv:test": "pnpx @dotenvx/dotenvx run -f .env.test.local",
+    "format": "prisma format && biome format --write",
+    "lint": "biome check --diagnostic-level=warn --write",
+    "test": ":",
+    "postinstall": "[ ! -e .env ] && cp .env.example .env || :",
+    "posttest": "pnpm db:down:test",
+    "studio": "prisma studio"
+  },
+  "dependencies": {
+    "@prisma/adapter-pg": "^7.3.0",
+    "@prisma/client": "^7.3.0",
+    "@prisma/client-runtime-utils": "^7.3.0",
+    "pg": "^8.18.0",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@repo/biome-config": "workspace:*",
+    "@repo/tsconfig": "workspace:*",
+    "@types/node": "^25.2.1",
+    "@types/pg": "^8.16.0",
+    "prisma": "^7.3.0",
+    "prisma-zod-generator": "^2.1.2",
+    "tsdown": "^0.20.3",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3"
+  }
+}

@@ -4,9 +4,16 @@
   "scripts": {
     "build": "turbo run build",
     "clean": "turbo run clean",
+    "db:generate": "turbo run db:generate",
+    "db:migrate": "turbo run db:migrate",
+    "db:migrate:test": "turbo run db:migrate:test",
+    "db:up:dev": "turbo run db:up:dev",
+    "db:up:test": "turbo run db:up:test",
+    "db:down:dev": "turbo run db:down:dev",
+    "db:down:test": "turbo run db:down:test",
     "dev": "turbo run dev",
-    "lint": "turbo run lint",
     "format": "biome format --write",
+    "lint": "turbo run lint",
     "test": "turbo run test"
   },
   "devDependencies": {

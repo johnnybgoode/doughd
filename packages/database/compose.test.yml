@@ -1,0 +1,7 @@
+services:
+  database:
+    extends:
+      file: common.yml
+      service: database
+    ports:
+      - "55432:5432"

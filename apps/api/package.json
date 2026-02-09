@@ -1,23 +1,28 @@
 {
   "name": "api",
   "private": true,
+  "type": "module",
   "version": "0.0.0",
   "scripts": {
-    "build": "tsc",
+    "build": "tsdown",
     "check-types": "tsc --noEmit",
     "clean": "rm -rf dist",
-    "dev": "pnpm dotenv-run tsx --watch src/index.ts",
+    "dev": "pnpm dotenv-run tsdown --watch --onSuccess \"node dist/index.js\"",
     "dotenv-run": "pnpx @dotenvx/dotenvx run -- ",
     "lint": "biome check --diagnostic-level=warn --write",
     "serve": "node dist/index.js",
-    "test": "vitest run",
+    "test": "pnpx @dotenvx/dotenvx run -f .env.test.local -- vitest run",
+    "pretest": "[ ! -e .env.test.local ] && cp -v .env.test.example .env.test.local || :",
+    "posttest": "pnpm turbo run db:down:test",
     "postinstall": "[ ! -e .env ] && cp -v .env.example .env || :"
   },
   "dependencies": {
+    "@repo/database": "workspace:*",
     "body-parser": "^2.2.2",
     "cors": "^2.8.6",
     "express": "^5.2.1",
-    "morgan": "^1.10.1"
+    "morgan": "^1.10.1",
+    "zod": "^4.3.6"
   },
   "devDependencies": {
     "@repo/biome-config": "workspace:*",
@@ -31,6 +36,7 @@
     "@types/supertest": "^6.0.3",
     "@vitest/coverage-v8": "^4.0.18",
     "supertest": "^7.2.2",
+    "tsdown": "^0.20.3",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3",
     "vitest": "^4.0.18"

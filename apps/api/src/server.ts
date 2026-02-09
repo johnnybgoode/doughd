@@ -1,8 +1,7 @@
-import { json, urlencoded } from 'body-parser';
 import cors from 'cors';
 import express, { type Express } from 'express';
 import morgan from 'morgan';
-import { makeRouter } from './router';
+import { makeRouter } from './recipe';
 
 export const makeServer = (): Express => {
   const app = express();
@@ -10,8 +9,8 @@ export const makeServer = (): Express => {
   app
     .disable('x-powered-by')
     .use(morgan('dev'))
-    .use(urlencoded({ extended: true }))
-    .use(json())
+    .use(express.urlencoded({ extended: true }))
+    .use(express.json())
     .use(cors())
     .use('/api', makeRouter());
 

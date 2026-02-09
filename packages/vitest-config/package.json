@@ -11,7 +11,6 @@
   "scripts": {
     "build": "tsc",
     "clean": "rm -r ./dist",
-    "dev": "tsc --watch",
     "lint": "biome check --diagnostic-level=warn --write"
   },
   "dependencies": {

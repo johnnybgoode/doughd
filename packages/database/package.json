@@ -7,6 +7,7 @@
       "default": "./dist/client.js",
       "types": "./dist/client.d.ts"
     },
+    "./models/*": "./generated/prisma/models/*.ts",
     "./schemas": {
       "default": "./dist/schemas.js",
       "types": "./dist/schemas.d.ts"
@@ -33,9 +34,7 @@
     "dotenv:test": "pnpx @dotenvx/dotenvx run -f .env.test.local",
     "format": "prisma format && biome format --write",
     "lint": "biome check --diagnostic-level=warn --write",
-    "test": ":",
     "postinstall": "[ ! -e .env ] && cp .env.example .env || :",
-    "posttest": "pnpm db:down:test",
     "studio": "prisma studio"
   },
   "dependencies": {

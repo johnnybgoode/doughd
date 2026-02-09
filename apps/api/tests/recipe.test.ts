@@ -1,3 +1,4 @@
+import { Recipe } from '@repo/database';
 import supertest from 'supertest';
 import { describe, expect, it } from 'vitest';
 import { server } from './utils/setup';
@@ -174,7 +175,32 @@ describe('/api/recipe', () => {
       });
   });
 
-  it('delete is not implemented', async () => {
-    await supertest(server).delete('/api/recipe/1').expect(500);
+  it('soft deletes a recipe', async () => {
+    await supertest(server)
+      .delete('/api/recipe/1')
+      .expect(200)
+      .then((res) => {
+        console.log(res.body);
+        expect(res.body.slug).toContain('//archived-');
+      });
+  });
+
+  it('does not return deleted recipes by default', async () => {
+    await supertest(server)
+      .get('/api/recipe')
+      .expect(200)
+      .then((res) => {
+        expect(res.body.filter((r: Recipe) => r.id === 1).length).toBe(0);
+      });
+  });
+
+  it('returns archived recipes with query param', async () => {
+    await supertest(server)
+      .get('/api/recipe?includeArchived=1')
+      .expect(200)
+      .then((res) => {
+        expect(res.body.length).toBeGreaterThan(1);
+        expect(res.body.filter((r: Recipe) => r.id === 1).length).toBe(1);
+      });
   });
 });

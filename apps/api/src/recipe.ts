@@ -1,8 +1,13 @@
 import type { Recipe } from '@repo/database';
 import { prisma } from '@repo/database';
+import type {
+  RecipeCreateInput,
+  RecipeUpdateInput,
+} from '@repo/database/models/Recipe';
 import {
-  RecipeInputSchema,
   type RecipeInputType,
+  RecipeUncheckedCreateInputObjectZodSchema,
+  RecipeUncheckedUpdateInputObjectZodSchema,
 } from '@repo/database/schemas';
 import express, {
   type NextFunction,
@@ -12,13 +17,14 @@ import express, {
 } from 'express';
 import { z } from 'zod';
 import { log } from './utils/logger';
+import { urlUUID } from './utils/urlUUID';
 
 type RequestWithRecipe = Request & { recipe?: RecipeInputType };
 
 const BASE_ROUTE = '/recipe';
 
 const makeValidator =
-  (parser: z.ZodObject) =>
+  <P extends z.ZodType<RecipeCreateInput | RecipeUpdateInput>>(parser: P) =>
   (req: RequestWithRecipe, res: Response, next: NextFunction) => {
     try {
       // ID can't be changed, omit to avoid parser error.
@@ -46,7 +52,7 @@ const makeLoader =
       const recipe = await loader(req.params);
       if (!recipe) {
         res.status(404).json({ status: 404, message: 'Recipe not found' });
-        return next();
+        return;
       }
       req.recipe = recipe;
       next();
@@ -74,9 +80,8 @@ export const makeRouter = (): Router => {
     makeLoader((params) => {
       return prisma.recipe.findFirst({
         where: {
-          id: {
-            equals: Number(params.recipe_id),
-          },
+          id: Number(params.recipe_id),
+          archived: false,
         },
       });
     }),
@@ -89,6 +94,7 @@ export const makeRouter = (): Router => {
       return prisma.recipe.findFirst({
         where: {
           slug,
+          archived: false,
         },
       });
     }),
@@ -96,23 +102,35 @@ export const makeRouter = (): Router => {
 
   router
     .route(BASE_ROUTE)
-    .get(async (_, res) => {
-      const recipes = await prisma.recipe.findMany();
+    .get(async (req, res) => {
+      const includeArchived = req.query.includeArchived;
+      const where = includeArchived
+        ? {
+            OR: [{ archived: true }, { archived: false }],
+          }
+        : { archived: false };
+      const recipes = await prisma.recipe.findMany({
+        where,
+      });
       return res.json(recipes);
     })
-    .post(setDefaults, makeValidator(RecipeInputSchema), async (req, res) => {
-      try {
-        const result = await prisma.recipe.create({
-          data: req.body,
-        });
-        res.json(result);
-      } catch (e: unknown) {
-        log.error(e);
-        res
-          .status(400)
-          .json({ status: 400, message: 'Failed to create recipe' });
-      }
-    });
+    .post(
+      setDefaults,
+      makeValidator(RecipeUncheckedCreateInputObjectZodSchema),
+      async (req, res) => {
+        try {
+          const result = await prisma.recipe.create({
+            data: req.body,
+          });
+          res.json(result);
+        } catch (e: unknown) {
+          log.error(e);
+          res
+            .status(400)
+            .json({ status: 400, message: 'Failed to create recipe' });
+        }
+      },
+    );
 
   router
     .route(`${BASE_ROUTE}/:recipe_id`)
@@ -120,7 +138,7 @@ export const makeRouter = (): Router => {
       res.json(req.recipe);
     })
     .put(
-      makeValidator(RecipeInputSchema),
+      makeValidator(RecipeUncheckedUpdateInputObjectZodSchema),
       async (req: RequestWithRecipe, res) => {
         try {
           const recipe = {
@@ -142,8 +160,26 @@ export const makeRouter = (): Router => {
         }
       },
     )
-    .delete((__req, __res, next) => {
-      next(new Error('Not implemented.'));
+    .delete(async (req: RequestWithRecipe, res) => {
+      try {
+        const recipe = {
+          ...req.recipe,
+          slug: req.recipe?.slug + `//archived-${urlUUID()}`,
+          archived: true,
+        } as ReturnType<typeof RecipeUncheckedUpdateInputObjectZodSchema.parse>;
+        const result = await prisma.recipe.update({
+          data: recipe,
+          where: {
+            id: Number(req.params.recipe_id),
+          },
+        });
+        res.json(result);
+      } catch (e: unknown) {
+        log.error(e);
+        res
+          .status(500)
+          .json({ status: 500, message: 'Failed to delete recipe' });
+      }
     });
 
   router

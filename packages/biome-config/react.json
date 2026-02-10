@@ -11,6 +11,11 @@
     },
     "enabled": true
   },
+  "css": {
+    "parser": {
+      "tailwindDirectives": true
+    }
+  },
   "formatter": {
     "enabled": true,
     "indentStyle": "space",
@@ -32,6 +37,7 @@
     "domains": {
       "project": "all",
       "react": "all",
+      "tailwind": "recommended",
       "test": "all"
     },
     "enabled": true,
@@ -79,6 +85,7 @@
         "useBlockStatements": "off"
       },
       "suspicious": {
+        "noArrayIndexKey": "off",
         "noAsyncPromiseExecutor": "error",
         "noCatchAssign": "error",
         "noClassAssign": "error",
@@ -103,9 +110,11 @@
         "noMisleadingInstantiator": "error",
         "noNonNullAssertedOptionalChain": "error",
         "noPrototypeBuiltins": "error",
+        "noReactSpecificProps": "off",
         "noRedeclare": "error",
         "noShadowRestrictedNames": "error",
         "noSparseArray": "error",
+        "noUnknownAtRules": "off",
         "noUnsafeDeclarationMerging": "error",
         "noUnsafeNegation": "error",
         "noUselessRegexBackrefs": "error",
@@ -130,11 +139,6 @@
             "useImportExtensions": "off",
             "useJsxKeyInIterable": "error"
           },
-          "suspicious": {
-            "noArrayIndexKey": "off",
-            "noReactSpecificProps": "off",
-            "noUnknownAtRules": "off"
-          },
           "performance": {
             "noImgElement": "off",
             "noNamespaceImport": "off",
@@ -144,7 +148,6 @@
             "noMagicNumbers": "off",
             "noNonNullAssertion": "off",
             "useExportsLast": "off",
-            "useBlockStatements": "off",
             "useFilenamingConvention": {
               "level": "error",
               "options": {

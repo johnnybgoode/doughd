@@ -97,7 +97,6 @@
         "rules": {
           "complexity": { "noArguments": "error" },
           "correctness": {
-            "noConstAssign": "off",
             "noGlobalObjectCalls": "off",
             "noInvalidBuiltinInstantiation": "off",
             "noInvalidConstructorSuper": "off",

@@ -1,0 +1,30 @@
+{
+  "extends": ["//"],
+  "tasks": {
+    "db:generate": {
+      "cache": true,
+      "outputs": ["generated/**"]
+    },
+    "db:migrate": {
+      "cache": true,
+      "dependsOn": ["db:generate", "db:up:dev"],
+      "outputs": ["prisma/migrations"]
+    },
+    "db:migrate:test": {
+      "cache": false,
+      "dependsOn": ["db:generate", "db:up:test"]
+    },
+    "db:down:dev": {
+      "cache": false
+    },
+    "db:down:test": {
+      "cache": false
+    },
+    "db:up:dev": {
+      "cache": false
+    },
+    "db:up:test": {
+      "cache": false
+    }
+  }
+}

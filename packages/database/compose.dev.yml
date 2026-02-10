@@ -1,0 +1,12 @@
+services:
+  database:
+    extends:
+      file: common.yml
+      service: database
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql
+
+volumes:
+  postgres_data:

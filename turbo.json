@@ -4,7 +4,7 @@
     "build": {
       "dependsOn": ["^build"],
       "inputs": ["$TURBO_DEFAULT$", ".env*"],
-      "env": ["API_PORT", "API_URL"],
+      "env": ["API_PORT", "API_URL", "DATABASE_URL"],
       "outputs": ["dist/**"]
     },
     "clean": {
@@ -14,7 +14,32 @@
       "cache": false,
       "persistent": true,
       "inputs": [".env*"],
-      "env": ["API_PORT", "API_URL"]
+      "env": ["API_PORT", "API_URL", "DATABASE_URL"]
+    },
+    "db:generate": {
+      "cache": true,
+      "outputs": ["generated/**"]
+    },
+    "db:migrate": {
+      "cache": true,
+      "dependsOn": ["db:generate", "db:up:dev"],
+      "outputs": ["prisma/migrations"]
+    },
+    "db:migrate:test": {
+      "cache": false,
+      "dependsOn": ["db:generate", "db:up:test"]
+    },
+    "db:down:dev": {
+      "cache": false
+    },
+    "db:down:test": {
+      "cache": false
+    },
+    "db:up:dev": {
+      "cache": false
+    },
+    "db:up:test": {
+      "cache": false
     },
     "lint": {},
     "test": {

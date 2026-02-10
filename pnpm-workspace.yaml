@@ -3,5 +3,8 @@ packages:
   - packages/*
 
 onlyBuiltDependencies:
+  - '@prisma/engines'
   - esbuild
   - msw
+  - prisma
+  - prisma-zod-generator

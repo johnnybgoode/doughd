@@ -35,4 +35,5 @@ model Recipe {
   portions      Json?
   ingredients   Json?
   steps         Json?
+  archived      Boolean  @default(false)
 }

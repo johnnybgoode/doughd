@@ -18,6 +18,7 @@ CREATE TABLE "Recipe" (
     "portions" JSONB,
     "ingredients" JSONB,
     "steps" JSONB,
+    "archived" BOOLEAN NOT NULL DEFAULT false,
 
     CONSTRAINT "Recipe_pkey" PRIMARY KEY ("id")
 );

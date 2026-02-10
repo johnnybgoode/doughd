@@ -43,6 +43,7 @@
     },
     "lint": {},
     "test": {
+      "cache": false,
       "dependsOn": ["transit", "@repo/vitest-config#build"]
     },
     "transit": {

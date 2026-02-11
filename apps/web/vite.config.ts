@@ -12,8 +12,10 @@ export default defineConfig({
   },
   server: {
     port: Number(process.env.PORT) || 3000,
-    proxy: {
-      '/api': `http://${process.env.API_URL}`,
-    },
+    proxy: !process.env.VITE_MOCK_SERVER
+      ? {
+          '/api': `http://${process.env.API_URL}`,
+        }
+      : undefined,
   },
 });

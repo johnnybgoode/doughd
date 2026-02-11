@@ -79,9 +79,7 @@ export const makeHttpClient = <
     const res = await putWithResponse(url, data);
     return parseResponse(res);
   };
-  const deleteRequest = async <D extends {}>(
-    url: FetchInput,
-  ): Promise<D | null> => {
+  const deleteRequest = async <D extends {}>(url: FetchInput): Promise<D | null> => {
     const res = await deleteWithResponse(url);
     return parseResponse(res);
   };

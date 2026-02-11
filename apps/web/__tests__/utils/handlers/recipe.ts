@@ -34,13 +34,10 @@ export const makeGetRecipe = (
   { id, ...rest }: Partial<RecipeInputType> & { id: number },
   { delay, ...options }: HttpResponseOptions = defaultHandlerOptions,
 ) =>
-  http.get<PathParams, DefaultBodyType, RecipeModel>(
-    `/api/recipe/${id}`,
-    async () => {
-      await delayFn(delay);
-      return HttpResponse.json(makeRecipe({ id, ...rest }), options);
-    },
-  );
+  http.get<PathParams, DefaultBodyType, RecipeModel>(`/api/recipe/${id}`, async () => {
+    await delayFn(delay);
+    return HttpResponse.json(makeRecipe({ id, ...rest }), options);
+  });
 
 export const makePostRecipe = (
   recipe?: RecipeInputType,

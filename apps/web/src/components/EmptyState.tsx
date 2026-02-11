@@ -15,12 +15,7 @@ type EmptyStateProps = {
   message: ReactNode;
 };
 
-export const EmptyState = ({
-  action,
-  icon,
-  header,
-  message,
-}: EmptyStateProps) => {
+export const EmptyState = ({ action, icon, header, message }: EmptyStateProps) => {
   return (
     <Empty>
       <EmptyHeader>

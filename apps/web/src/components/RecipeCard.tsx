@@ -1,11 +1,6 @@
 import type { Recipe } from '@repo/database';
 import { Button } from '@repo/ui/components/button';
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardTitle,
-} from '@repo/ui/components/card';
+import { Card, CardContent, CardFooter, CardTitle } from '@repo/ui/components/card';
 import { Image } from '@repo/ui/components/image';
 import { Heading } from '@repo/ui/components/typography';
 import { Link } from 'react-router';

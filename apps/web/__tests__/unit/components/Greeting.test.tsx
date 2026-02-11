@@ -12,17 +12,13 @@ describe('Greeting', () => {
   });
 
   it('renders placeholder on error', async () => {
-    server.use(
-      makeGetApiHandler({ message: 'Failed to get message' }, { status: 400 }),
-    );
+    server.use(makeGetApiHandler({ message: 'Failed to get message' }, { status: 400 }));
     render(<Greeting />);
     await screen.findByText(/hi/i);
   });
 
   it('renders loading text', async () => {
-    server.use(
-      makeGetApiHandler({ message: 'Hello, world! ' }, { delay: 'real' }),
-    );
+    server.use(makeGetApiHandler({ message: 'Hello, world! ' }, { delay: 'real' }));
     render(<Greeting />);
     await screen.findByText(/loading/i);
   });

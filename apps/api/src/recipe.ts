@@ -1,20 +1,12 @@
 import type { Recipe } from '@repo/database';
 import { prisma } from '@repo/database';
-import type {
-  RecipeCreateInput,
-  RecipeUpdateInput,
-} from '@repo/database/models/Recipe';
+import type { RecipeCreateInput, RecipeUpdateInput } from '@repo/database/models/Recipe';
 import {
   type RecipeInputType,
   RecipeUncheckedCreateInputObjectZodSchema,
   RecipeUncheckedUpdateInputObjectZodSchema,
 } from '@repo/database/schemas';
-import express, {
-  type NextFunction,
-  type Request,
-  type Response,
-  Router,
-} from 'express';
+import express, { type NextFunction, type Request, type Response, Router } from 'express';
 import { z } from 'zod';
 import { log } from './utils/logger';
 import { urlUUID } from './utils/urlUUID';
@@ -44,9 +36,7 @@ const makeValidator =
   };
 
 const makeLoader =
-  (
-    loader: <P extends Request['params']>(params: P) => Promise<Recipe | null>,
-  ) =>
+  (loader: <P extends Request['params']>(params: P) => Promise<Recipe | null>) =>
   async (req: RequestWithRecipe, res: Response, next: NextFunction) => {
     try {
       const recipe = await loader(req.params);
@@ -89,8 +79,7 @@ export const makeRouter = (): Router => {
   router.param(
     'slug',
     makeLoader((params) => {
-      const slug =
-        typeof params.slug === 'string' ? params.slug : params.slug.pop();
+      const slug = typeof params.slug === 'string' ? params.slug : params.slug.pop();
       return prisma.recipe.findFirst({
         where: {
           slug,
@@ -125,9 +114,7 @@ export const makeRouter = (): Router => {
           res.json(result);
         } catch (e: unknown) {
           log.error(e);
-          res
-            .status(400)
-            .json({ status: 400, message: 'Failed to create recipe' });
+          res.status(400).json({ status: 400, message: 'Failed to create recipe' });
         }
       },
     );
@@ -154,9 +141,7 @@ export const makeRouter = (): Router => {
           res.json(result);
         } catch (e: unknown) {
           log.error(e);
-          res
-            .status(400)
-            .json({ status: 400, message: 'Failed to update recipe' });
+          res.status(400).json({ status: 400, message: 'Failed to update recipe' });
         }
       },
     )
@@ -176,17 +161,13 @@ export const makeRouter = (): Router => {
         res.json(result);
       } catch (e: unknown) {
         log.error(e);
-        res
-          .status(500)
-          .json({ status: 500, message: 'Failed to delete recipe' });
+        res.status(500).json({ status: 500, message: 'Failed to delete recipe' });
       }
     });
 
-  router
-    .route(`${BASE_ROUTE}/by-slug/:slug`)
-    .get(async (req: RequestWithRecipe, res) => {
-      res.json(req.recipe);
-    });
+  router.route(`${BASE_ROUTE}/by-slug/:slug`).get(async (req: RequestWithRecipe, res) => {
+    res.json(req.recipe);
+  });
 
   return router;
 };

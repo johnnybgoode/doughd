@@ -1,7 +1,4 @@
-import type {
-  RecipeCreateInput,
-  UserCreateInput,
-} from '../generated/prisma/models';
+import type { RecipeCreateInput, UserCreateInput } from '../generated/prisma/models';
 import { prisma } from './client';
 
 const DEFAULT_USERS = [

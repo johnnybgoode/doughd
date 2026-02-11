@@ -35,9 +35,7 @@ describe('http client', () => {
   });
 
   it('DELETEs Json', async () => {
-    server.use(
-      httpMsw.delete('/api/test', () => HttpResponse.json({ ok: true })),
-    );
+    server.use(httpMsw.delete('/api/test', () => HttpResponse.json({ ok: true })));
     const result = await http.delete<TestResponse>('/api/test');
     expect(result?.ok).toBe(true);
   });
@@ -71,9 +69,7 @@ describe('http client', () => {
   });
 
   it('deleteWithResponse returns a Response', async () => {
-    server.use(
-      httpMsw.delete('/api/test', () => HttpResponse.json({ ok: true })),
-    );
+    server.use(httpMsw.delete('/api/test', () => HttpResponse.json({ ok: true })));
     const response = await http.deleteWithResponse('/api/test');
     expect(response).toBeInstanceOf(Response);
   });

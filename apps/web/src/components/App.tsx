@@ -1,7 +1,8 @@
-import { Greeting } from './Greeting';
+import { ErrorBoundary } from 'react-error-boundary';
+import { RecipeListing } from './RecipeListing';
 
 export const App = () => (
-  <div>
-    <Greeting />
-  </div>
+  <ErrorBoundary fallbackRender={() => 'Error :('}>
+    <RecipeListing />
+  </ErrorBoundary>
 );

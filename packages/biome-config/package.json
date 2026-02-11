@@ -5,7 +5,8 @@
   "license": "MIT",
   "exports": {
     "./base": "./base.json",
-    "./react": "./react.json"
+    "./react": "./react.json",
+    "./react-internal": "./react-internal.json"
   },
   "publishConfig": {
     "access": "public"

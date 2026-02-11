@@ -14,7 +14,7 @@
     "dev": "turbo run dev",
     "format": "biome format --write",
     "lint": "turbo run lint",
-    "test": "turbo run test --continue && turbo run db:down:test || turbo run db:down:test"
+    "test": "turbo run test"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.3.14",

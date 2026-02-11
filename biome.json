@@ -12,7 +12,7 @@
     "includes": ["**", "!**/coverage", "!**/dist", "!.turbo"]
   },
   "formatter": {
-    "lineWidth": 100,
+    "lineWidth": 90,
     "indentStyle": "space",
     "indentWidth": 2,
     "lineEnding": "lf"

@@ -6,7 +6,12 @@
     "ignoreUnknown": false,
     "includes": ["**", "!coverage", "!dist", "!.turbo"]
   },
-  "formatter": { "enabled": true, "indentStyle": "space", "lineEnding": "lf" },
+  "formatter": {
+    "enabled": true,
+    "indentStyle": "space",
+    "lineWidth": 90,
+    "lineEnding": "lf"
+  },
   "linter": {
     "enabled": true,
     "rules": {

@@ -77,6 +77,12 @@
         "useValidTypeof": "error",
         "useYield": "error"
       },
+      "nursery": {
+        "useSortedClasses": {
+          "level": "warn",
+          "fix": "safe"
+        }
+      },
       "style": {
         "noCommonJs": "error",
         "noNamespace": "error",

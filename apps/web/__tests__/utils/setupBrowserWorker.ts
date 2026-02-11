@@ -13,7 +13,31 @@ export const worker = setupWorker(
     defaultRecipe,
     {
       ...defaultRecipe,
+      title: 'Dinner rolls',
       id: 2,
+    },
+    {
+      ...defaultRecipe,
+      id: 3,
+    },
+    {
+      ...defaultRecipe,
+      title: 'Pizza dough',
+      id: 4,
+    },
+    {
+      ...defaultRecipe,
+      title: 'Dinner rolls',
+      id: 5,
+    },
+    {
+      ...defaultRecipe,
+      id: 6,
+    },
+    {
+      ...defaultRecipe,
+      title: 'Pizza dough',
+      id: 7,
     },
   ]),
   makePostRecipe(),

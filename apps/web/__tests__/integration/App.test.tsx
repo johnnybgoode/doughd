@@ -1,8 +1,8 @@
 import { describe, expect } from 'vitest';
 import { render } from 'vitest-browser-react';
 import { App } from '../../src/components/App';
-import { makeGetApiHandler } from '../mocks/handlers';
-import { test } from './utils/setup';
+import { makeGetApiHandler } from '../utils/handlers/demo';
+import { test } from '../utils/setupWorker';
 
 describe('App', () => {
   test('renders a greeting', async ({ worker }) => {

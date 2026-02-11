@@ -30,7 +30,7 @@ const config = mergeConfig(
           },
           test: {
             name: 'browser',
-            include: ['**/browser/*.test.ts?(x)'],
+            include: ['**/integration/*.test.ts?(x)'],
             isolate: true,
             browser: {
               provider: playwright(),

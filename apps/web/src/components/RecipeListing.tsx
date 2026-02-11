@@ -1,7 +1,9 @@
-import { Heading } from '@repo/ui/components/typography';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { Suspense } from 'react';
+import { ErrorBoundary } from 'react-error-boundary';
 import { getRecipes } from '@/data/recipe';
+import { ErrorEmptyState } from './EmptyState';
+import { Loading } from './Loading';
 import { RecipeCard } from './RecipeCard';
 
 const RecipeListingGrid = ({ className }: { className?: string }) => {
@@ -26,15 +28,14 @@ const RecipeListingGrid = ({ className }: { className?: string }) => {
 
 export const RecipeListing = () => {
   return (
-    <>
-      <div className="p-8 p-x-4">
-        <Heading level="1">Recipes</Heading>
-      </div>
-      <div className="bg-gray-50 p-4">
-        <Suspense>
-          <RecipeListingGrid className="mx-auto max-w-[1280px]" />
-        </Suspense>
-      </div>
-    </>
+    <ErrorBoundary
+      fallback={
+        <ErrorEmptyState message="There was a problem loading your recipes. Please refresh to try again." />
+      }
+    >
+      <Suspense fallback={<Loading center={true} size="lg" />}>
+        <RecipeListingGrid className="mx-auto max-w-[1280px] flex-grow-1" />
+      </Suspense>
+    </ErrorBoundary>
   );
 };

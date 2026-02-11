@@ -2,9 +2,11 @@ import './global.css';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
+import { ErrorBoundary } from 'react-error-boundary';
 import { BrowserRouter } from 'react-router';
+import queryClient from '@/lib/queryClient';
 import { App } from './components/App';
-import queryClient from './lib/queryClient';
+import { ErrorEmptyState } from './components/EmptyState';
 
 const enableMocking = async () => {
   if (!(import.meta.env.DEV && import.meta.env.VITE_MOCK_SERVER === 'true')) {
@@ -22,7 +24,9 @@ enableMocking()
       <StrictMode>
         <BrowserRouter>
           <QueryClientProvider client={queryClient}>
-            <App />
+            <ErrorBoundary fallback={<ErrorEmptyState action={null} />}>
+              <App />
+            </ErrorBoundary>
           </QueryClientProvider>
         </BrowserRouter>
       </StrictMode>,

@@ -3,12 +3,18 @@ import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vite';
 
+export const alias = {
+  '@': path.resolve(__dirname, 'src'),
+  '@/components': path.resolve(__dirname, 'src/components'),
+  '@/data': path.resolve(__dirname, 'src/data'),
+  '@/lib': path.resolve(__dirname, 'src/lib'),
+  '@/test': path.resolve(__dirname, '__tests__'),
+};
+
 export default defineConfig({
   plugins: [react(), tailwindcss()],
   resolve: {
-    alias: {
-      '@': path.resolve(__dirname, './src'),
-    },
+    alias,
   },
   server: {
     port: Number(process.env.PORT) || 3000,

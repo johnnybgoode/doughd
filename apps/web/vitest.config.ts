@@ -2,9 +2,13 @@ import { makeBaseConfig } from '@repo/vitest-config/base';
 import react from '@vitejs/plugin-react';
 import { playwright } from '@vitest/browser-playwright';
 import { defineProject, mergeConfig } from 'vitest/config';
+import { alias } from './vite.config';
 
 const config = mergeConfig(
   makeBaseConfig({
+    resolve: {
+      alias,
+    },
     test: {
       plugins: [react()],
       coverage: {
@@ -28,8 +32,12 @@ const config = mergeConfig(
           optimizeDeps: {
             include: ['react-dom/client'],
           },
+          plugins: [react()],
+          resolve: {
+            alias,
+          },
           test: {
-            name: 'browser',
+            name: 'integration',
             include: ['**/integration/*.test.ts?(x)'],
             isolate: true,
             browser: {

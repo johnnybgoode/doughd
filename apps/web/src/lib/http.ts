@@ -22,6 +22,15 @@ const mergeOpts = <T extends DefaultOpts, O extends RequestOpts>(
 const isCallable = <F extends Function>(fn?: F): fn is F =>
   typeof fn !== 'undefined' && typeof fn === 'function';
 
+const parseJson = async (response: Response) => {
+  try {
+    const json = await response.json();
+    return json;
+  } catch (__e) {
+    return null;
+  }
+};
+
 export const makeHttpClient = <
   T extends DefaultOpts,
   R extends FetchOpts = Omit<RequestOpts, keyof T>,
@@ -29,11 +38,15 @@ export const makeHttpClient = <
   defaultOpts: T = {} as T,
 ) => {
   const maybeResponseParser = defaultOpts.responseParser;
-  const parseResponse = (response: Response) => {
+  const parseResponse = async (response: Response) => {
     if (isCallable(maybeResponseParser)) {
       return maybeResponseParser(response);
     }
-    return response.json();
+    const json = await parseJson(response);
+    if (response.status >= 400) {
+      throw new Error(response.statusText, { cause: json || undefined });
+    }
+    return json;
   };
 
   const getWithResponse = (url: FetchInput, opts?: R) =>

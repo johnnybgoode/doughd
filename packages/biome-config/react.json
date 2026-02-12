@@ -16,13 +16,6 @@
       "tailwindDirectives": true
     }
   },
-  "formatter": {
-    "enabled": true,
-    "indentStyle": "space",
-    "indentWidth": 2,
-    "lineWidth": 80,
-    "lineEnding": "lf"
-  },
   "javascript": {
     "formatter": {
       "arrowParentheses": "asNeeded",
@@ -70,6 +63,14 @@
         "noUnsafeOptionalChaining": "error",
         "noUnusedLabels": "error",
         "noUnusedImports": "error",
+        "useExhaustiveDependencies": {
+          "level": "error",
+          "fix": "safe"
+        },
+        "useHookAtTopLevel": "error",
+        "useImageSize": "off",
+        "useImportExtensions": "off",
+        "useJsxKeyInIterable": "error",
         "noUnusedPrivateClassMembers": "error",
         "noUnusedVariables": "error",
         "useIsNan": "error",
@@ -85,10 +86,26 @@
       },
       "style": {
         "noCommonJs": "error",
+        "noMagicNumbers": "off",
         "noNamespace": "error",
+        "noNonNullAssertion": "off",
+        "useExportsLast": "off",
+        "useFilenamingConvention": {
+          "level": "error",
+          "options": {
+            "strictCase": false,
+            "requireAscii": true,
+            "filenameCases": ["camelCase", "kebab-case", "PascalCase"]
+          }
+        },
         "useArrayLiterals": "error",
         "useAsConstAssertion": "error",
         "useBlockStatements": "off"
+      },
+      "performance": {
+        "noImgElement": "off",
+        "noNamespaceImport": "off",
+        "useSolidForComponent": "off"
       },
       "suspicious": {
         "noArrayIndexKey": "off",
@@ -132,52 +149,7 @@
   },
   "overrides": [
     {
-      "includes": ["**/*"],
-      "linter": {
-        "rules": {
-          "correctness": {
-            "useExhaustiveDependencies": {
-              "level": "error",
-              "fix": "safe"
-            },
-            "useHookAtTopLevel": "error",
-            "useImageSize": "off",
-            "useImportExtensions": "off",
-            "useJsxKeyInIterable": "error"
-          },
-          "performance": {
-            "noImgElement": "off",
-            "noNamespaceImport": "off",
-            "useSolidForComponent": "off"
-          },
-          "style": {
-            "noMagicNumbers": "off",
-            "noNonNullAssertion": "off",
-            "useExportsLast": "off",
-            "useFilenamingConvention": {
-              "level": "error",
-              "options": {
-                "strictCase": false,
-                "requireAscii": true,
-                "filenameCases": ["camelCase", "kebab-case", "PascalCase"]
-              }
-            }
-          }
-        }
-      }
-    },
-    {
-      "includes": ["api/**"],
-      "linter": {
-        "rules": {
-          "style": {
-            "noDefaultExport": "off"
-          }
-        }
-      }
-    },
-    {
-      "includes": ["vite.config.ts"],
+      "includes": ["vite.config.ts", "vitest.config.ts"],
       "linter": {
         "rules": {
           "correctness": {
@@ -191,7 +163,7 @@
       }
     },
     {
-      "includes": ["src/**/*.test.tsx"],
+      "includes": ["**/*.test.ts", "**/*.test.tsx"],
       "linter": {
         "rules": {
           "performance": {

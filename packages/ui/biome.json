@@ -1,5 +1,27 @@
 {
-	"$schema": "../../node_modules/@biomejs/biome/configuration_schema.json",
-	"root": false,
-	"extends": ["@repo/biome-config/react-internal"]
+  "$schema": "../../node_modules/@biomejs/biome/configuration_schema.json",
+  "root": false,
+  "extends": ["@repo/biome-config/base", "@repo/biome-config/react-internal"],
+  "overrides": [
+    {
+      "includes": ["**/*/*.ts", "**/*/*.tsx"],
+      "assist": {
+        "actions": {
+          "source": {
+            "organizeImports": "off"
+          }
+        }
+      },
+      "linter": {
+        "rules": {
+          "nursery": {
+            "useSortedClasses": "off"
+          },
+          "suspicious": {
+            "noArrayIndexKey": "off"
+          }
+        }
+      }
+    }
+  ]
 }

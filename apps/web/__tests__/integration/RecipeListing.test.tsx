@@ -3,7 +3,7 @@ import { describe, expect } from 'vitest';
 import { RecipeListing } from '@/components/RecipeListing';
 import { makeRecipe } from '../utils/fixtures/recipe';
 import { makeGetRecipes } from '../utils/handlers/recipe';
-import { appRender } from '../utils/renderBrowser';
+import { appRender } from '../utils/render/renderBrowser';
 import { test } from '../utils/setupWorker';
 
 describe('RecipeListing', () => {

@@ -8,7 +8,7 @@ export const test = testBase.extend<{ worker: typeof worker }>({
     // biome-ignore lint: Unexpected empty object pattern.
     async ({}, use) => {
       // Start the worker before the test.
-      await worker.start();
+      await worker.start({ quiet: true });
 
       // Expose the worker object on the test's context.
       await use(worker);

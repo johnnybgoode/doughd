@@ -35,7 +35,9 @@
     "format": "prisma format && biome format --write",
     "lint": "biome check --diagnostic-level=warn --write",
     "postinstall": "[ ! -e .env ] && cp .env.example .env || :",
-    "studio": "prisma studio"
+    "studio": "prisma studio",
+    "test": ":",
+    "posttest": "pnpm db:down:test"
   },
   "dependencies": {
     "@prisma/adapter-pg": "^7.3.0",

@@ -1,8 +1,8 @@
 import { render, screen } from '@testing-library/react';
 import { describe, it } from 'vitest';
 import { Greeting } from '../../../src/components/Greeting';
-import { makeGetApiHandler } from '../../mocks/handlers';
-import { server } from '../utils/setup';
+import { makeGetApiHandler } from '../../utils/handlers/demo';
+import { server } from '../../utils/setupServer';
 
 describe('Greeting', () => {
   it('renders a message', async () => {

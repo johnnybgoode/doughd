@@ -26,7 +26,7 @@ export function Image({ alt, src, width }: ImageProps) {
 			decoding={isTabletAndUp ? "sync" : "async"}
 			height={imageHeight}
 			loading={isTabletAndUp ? "eager" : "lazy"}
-			src={`${src}&w=${imageWidth * window.devicePixelRatio}`}
+			src={src}
 			width={imageWidth}
 		/>
 	);

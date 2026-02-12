@@ -10,10 +10,10 @@ type HeadingProps = PropsWithChildren<{ level: "1" | "2" | "3" | "4" }>;
 export function Heading({ children, level }: HeadingProps) {
 	const Tag: ElementType<HTMLAttributes<HTMLHeadingElement>> = `h${level}`;
 	const classes = {
-		"1": "scroll-m-20 text-center text-4xl font-extrabold tracking-tight text-balance",
-		"2": "scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight first:mt-0",
-		"3": "scroll-m-20 text-2xl font-semibold tracking-tight",
-		"4": "scroll-m-20 text-xl font-semibold tracking-tight",
+		"1": "scroll-m-20 text-center text-4xl font-extrabold text-balance",
+		"2": "scroll-m-20 text-3xl font-semibold first:mt-0 tracking-tight",
+		"3": "scroll-m-20 text-2xl font-semibold",
+		"4": "scroll-m-20 text-xl font-semibold",
 	};
 
 	return <Tag className={classes[level]}>{children}</Tag>;

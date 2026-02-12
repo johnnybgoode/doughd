@@ -1,5 +1,8 @@
-import { QueryClient } from '@tanstack/react-query';
+import { QueryClient, type QueryClientConfig } from '@tanstack/react-query';
 
-const client = new QueryClient();
+export const makeQueryClient = (config?: QueryClientConfig) => {
+  return new QueryClient(config);
+};
 
+const client = makeQueryClient();
 export default client;

@@ -21,6 +21,10 @@ const config = mergeConfig(
       pool: 'threads',
       projects: [
         defineProject({
+          plugins: [react()],
+          resolve: {
+            alias,
+          },
           test: {
             name: 'unit',
             include: ['**/unit/**/*.test.ts?(x)'],

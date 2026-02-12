@@ -1,5 +1,17 @@
 {
   "$schema": "../../node_modules/@biomejs/biome/configuration_schema.json",
   "root": false,
-  "extends": ["@repo/biome-config/base", "@repo/biome-config/react"]
+  "extends": ["@repo/biome-config/base", "@repo/biome-config/react"],
+  "overrides": [
+    {
+      "includes": ["__tests__/**/*.ts", "__tests__/**/*.tsx"],
+      "linter": {
+        "rules": {
+          "style": {
+            "useComponentExportOnlyModules": "off"
+          }
+        }
+      }
+    }
+  ]
 }

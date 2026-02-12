@@ -1,6 +1,14 @@
 import { Heading } from '@repo/ui/components/typography';
+import React, { Suspense } from 'react';
+import { ErrorBoundary } from 'react-error-boundary';
+import { Navigate, Route, Routes } from 'react-router';
+import { ErrorEmptyState } from './EmptyState';
+import { Loading } from './Loading';
 import { Page } from './Page';
-import { RecipeListing } from './RecipeListing';
+
+const AsyncRecipeListing = React.lazy(async () =>
+  import('./RecipeListing').then(m => ({ default: m.RecipeListing })),
+);
 
 export const App = () => {
   return (
@@ -12,7 +20,14 @@ export const App = () => {
           </div>
         }
       >
-        <RecipeListing />
+        <ErrorBoundary fallback={<ErrorEmptyState action={null} />}>
+          <Suspense fallback={<Loading center={true} size="lg" />}>
+            <Routes>
+              <Route Component={AsyncRecipeListing} path="/recipes" />
+              <Route element={<Navigate to="/recipes" />} path="*" />
+            </Routes>
+          </Suspense>
+        </ErrorBoundary>
       </Page>
     </div>
   );

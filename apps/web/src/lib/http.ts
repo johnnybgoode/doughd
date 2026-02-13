@@ -35,6 +35,14 @@ const mergeOpts = <T extends DefaultOpts, O extends RequestOpts>(
   },
 });
 
+const doFetch = async <O extends RequestOpts>(url: FetchInput, opts: O) => {
+  const response = await fetch(url, opts);
+  if (response.status >= 400) {
+    throw new HttpError(response);
+  }
+  return response;
+};
+
 const isCallable = <F extends Function>(fn?: F): fn is F =>
   typeof fn !== 'undefined' && typeof fn === 'function';
 
@@ -45,9 +53,6 @@ export const makeHttpClient = <
   { responseParser, ...defaultOpts }: T = {} as T,
 ) => {
   const parseResponse = async (response: Response) => {
-    if (response.status >= 400) {
-      throw new HttpError(response);
-    }
     if (isCallable(responseParser)) {
       return responseParser(response);
     }
@@ -55,54 +60,46 @@ export const makeHttpClient = <
   };
 
   const getWithResponse = (url: FetchInput, opts?: R) =>
-    fetch(url, {
+    doFetch(url, {
       ...mergeOpts(defaultOpts, opts),
       method: 'GET',
     });
   const postWithResponse = <D extends {}>(url: FetchInput, data: D, opts?: R) =>
-    fetch(url, {
+    doFetch(url, {
       ...mergeOpts(defaultOpts, opts),
       body: JSON.stringify(data),
       method: 'POST',
     });
   const putWithResponse = <D extends {}>(url: FetchInput, data: D, opts?: R) =>
-    fetch(url, {
+    doFetch(url, {
       ...mergeOpts(defaultOpts, opts),
       body: JSON.stringify(data),
       method: 'PUT',
     });
   const deleteWithResponse = (url: FetchInput, opts?: R) =>
-    fetch(url, {
+    doFetch(url, {
       ...mergeOpts(defaultOpts, opts),
       method: 'DELETE',
     });
 
-  const get = async <D extends {}>(url: FetchInput): Promise<D | null> => {
-    const res = await getWithResponse(url);
-    return parseResponse(res);
-  };
+  const get = async <D extends {}>(url: FetchInput): Promise<D | null> =>
+    parseResponse(await getWithResponse(url));
+
   const post = async <D extends {}>(
     url: FetchInput,
     // biome-ignore lint: suspicious/noExplicitAny
     data: any,
-  ): Promise<D | null> => {
-    const res = await postWithResponse(url, data);
-    return parseResponse(res);
-  };
+  ): Promise<D | null> => parseResponse(await postWithResponse(url, data));
+
   const put = async <D extends {}>(
     url: FetchInput,
     // biome-ignore lint: suspicious/noExplicitAny
     data: any,
-  ): Promise<D | null> => {
-    const res = await putWithResponse(url, data);
-    return parseResponse(res);
-  };
+  ): Promise<D | null> => parseResponse(await putWithResponse(url, data));
+
   const deleteRequest = async <D extends {}>(
     url: FetchInput,
-  ): Promise<D | null> => {
-    const res = await deleteWithResponse(url);
-    return parseResponse(res);
-  };
+  ): Promise<D | null> => parseResponse(await deleteWithResponse(url));
 
   return {
     getWithResponse,

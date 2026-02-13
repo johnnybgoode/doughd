@@ -1,6 +1,6 @@
 import { HttpResponse, http as httpMsw } from 'msw';
 import { describe, expect, it } from 'vitest';
-import http from '../../../src/lib/http';
+import http, { HttpError } from '../../../src/lib/http';
 import { server } from '../../utils/setupServer';
 
 type TestResponse = { ok: boolean };
@@ -76,5 +76,23 @@ describe('http client', () => {
     );
     const response = await http.deleteWithResponse('/api/test');
     expect(response).toBeInstanceOf(Response);
+  });
+
+  it('throws HttpError on error status', async () => {
+    server.use(
+      httpMsw.get('/api/test', () =>
+        HttpResponse.json({ ok: false }, { status: 500 }),
+      ),
+    );
+    try {
+      await http.get('/api/test');
+    } catch (e: unknown) {
+      expect(e).toBeInstanceOf(HttpError);
+    }
+    try {
+      await http.getWithResponse('/api/test');
+    } catch (e: unknown) {
+      expect(e).toBeInstanceOf(HttpError);
+    }
   });
 });

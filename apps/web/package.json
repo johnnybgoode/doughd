@@ -6,8 +6,7 @@
   "scripts": {
     "build": "tsc && vite build",
     "clean": "rm -rf dist",
-    "dev": "pnpm dotenv-run vite --clearScreen false",
-    "dotenv-run": "pnpx @dotenvx/dotenvx run -- ",
+    "dev": "pnpm dotenvx run -- vite --clearScreen false",
     "lint": "biome check --diagnostic-level=warn --write",
     "preview": "vite preview",
     "test": "vitest run",

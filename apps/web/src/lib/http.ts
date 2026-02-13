@@ -7,6 +7,22 @@ type DefaultOpts = Omit<RequestOpts, 'body' | 'signal'> & {
   responseParser?: (response: Response) => any;
 };
 
+export class HttpError extends Error {
+  public response: Response;
+
+  constructor(res: Response, options?: ErrorOptions) {
+    super(res.statusText, options);
+    this.response = res;
+    this.name = this.constructor.name;
+  }
+  get statusCode() {
+    return this.response.status;
+  }
+  get statusText() {
+    return this.response.statusText;
+  }
+}
+
 const mergeOpts = <T extends DefaultOpts, O extends RequestOpts>(
   defaults: T,
   opts: O = {} as O,
@@ -30,7 +46,7 @@ export const makeHttpClient = <
 ) => {
   const parseResponse = async (response: Response) => {
     if (response.status >= 400) {
-      throw new Error(response.statusText, { cause: response });
+      throw new HttpError(response);
     }
     if (isCallable(responseParser)) {
       return responseParser(response);

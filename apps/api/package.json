@@ -7,11 +7,10 @@
     "build": "tsdown",
     "check-types": "tsc --noEmit",
     "clean": "rm -rf dist",
-    "dev": "pnpm dotenv-run tsdown --watch --onSuccess \"node dist/index.js\"",
-    "dotenv-run": "pnpx @dotenvx/dotenvx run -- ",
+    "dev": "pnpm dotenvx run -- tsdown --watch --onSuccess \"node dist/index.js\"",
     "lint": "biome check --diagnostic-level=warn --write",
     "serve": "node dist/index.js",
-    "test": "pnpx @dotenvx/dotenvx run -f .env.test.local -- vitest run",
+    "test": "pnpm dotenvx run -f .env.test.local -- vitest run",
     "pretest": "[ ! -e .env.test.local ] && cp -v .env.test.example .env.test.local || :",
     "posttest": "pnpm turbo run db:down:test",
     "postinstall": "[ ! -e .env ] && cp -v .env.example .env || :"

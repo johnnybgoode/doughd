@@ -11,6 +11,9 @@ importers:
       '@biomejs/biome':
         specifier: ^2.3.14
         version: 2.3.14
+      '@dotenvx/dotenvx':
+        specifier: ^1.52.0
+        version: 1.52.0
       turbo:
         specifier: ^2.8.3
         version: 2.8.3

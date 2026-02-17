@@ -4,10 +4,14 @@ import type {
   PropsWithChildren,
   ReactElement,
 } from 'react';
+import { cn } from '../lib/utils';
 
-type HeadingProps = PropsWithChildren<{ level: '1' | '2' | '3' | '4' }>;
+type HeadingProps = PropsWithChildren<{
+  className?: string;
+  level: '1' | '2' | '3' | '4';
+}>;
 
-export function Heading({ children, level }: HeadingProps) {
+export function Heading({ children, className, level }: HeadingProps) {
   const Tag: ElementType<HTMLAttributes<HTMLHeadingElement>> = `h${level}`;
   const classes = {
     '1': 'scroll-m-20 text-center text-4xl font-extrabold text-balance',
@@ -16,7 +20,7 @@ export function Heading({ children, level }: HeadingProps) {
     '4': 'scroll-m-20 text-xl font-semibold',
   };
 
-  return <Tag className={classes[level]}>{children}</Tag>;
+  return <Tag className={cn(className, classes[level])}>{children}</Tag>;
 }
 
 export function P({ children }: PropsWithChildren) {

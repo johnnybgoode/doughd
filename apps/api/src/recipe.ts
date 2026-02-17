@@ -5,7 +5,8 @@ import type {
   RecipeUpdateInput,
 } from '@repo/database/models/Recipe';
 import {
-  type RecipeInputType,
+  // type RecipeInputType,
+  // type RecipePureType,
   RecipeUncheckedCreateInputObjectZodSchema,
   RecipeUncheckedUpdateInputObjectZodSchema,
 } from '@repo/database/schemas';
@@ -19,7 +20,7 @@ import { z } from 'zod';
 import { log } from './utils/logger';
 import { urlUUID } from './utils/urlUUID';
 
-type RequestWithRecipe = Request & { recipe?: RecipeInputType };
+type RequestWithRecipe = Request & { recipe?: Recipe };
 
 const BASE_ROUTE = '/recipe';
 

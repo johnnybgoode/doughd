@@ -1,8 +1,8 @@
 import { cva, type VariantProps } from 'class-variance-authority';
 import { Slot } from 'radix-ui';
 
-import { cn } from '../lib/utils';
-import { Separator } from '@/components/separator';
+import { cn } from '@repo/ui/lib/utils';
+import { Separator } from '@repo/ui/components/separator';
 
 const buttonGroupVariants = cva(
   "has-[>[data-slot=button-group]]:gap-2 has-[select[aria-hidden=true]:last-child]:[&>[data-slot=select-trigger]:last-of-type]:rounded-r-md flex w-fit items-stretch *:focus-visible:z-10 *:focus-visible:relative [&>[data-slot=select-trigger]:not([class*='w-'])]:w-fit [&>input]:flex-1",

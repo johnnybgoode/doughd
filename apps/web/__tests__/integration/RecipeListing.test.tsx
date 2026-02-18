@@ -2,7 +2,7 @@ import { describe, expect } from 'vitest';
 import { RecipeListing } from '@/components/RecipeListing';
 import { makeRecipe } from '../utils/fixtures/recipe';
 import { makeGetRecipes } from '../utils/handlers/recipe';
-import { appRender, waitForLoading } from '../utils/render/renderBrowser';
+import { appRender } from '../utils/render/renderBrowser';
 import { test } from '../utils/setupWorker';
 
 describe('RecipeListing', () => {
@@ -17,7 +17,12 @@ describe('RecipeListing', () => {
 
     const screen = await appRender(<RecipeListing />);
 
-    await waitForLoading(screen);
+    await expect
+      .element(screen.getByRole('status', { name: /loading/i }))
+      .toBeVisible();
+    await expect
+      .element(screen.getByRole('status', { name: /loading/i }))
+      .toBeInTheDocument();
 
     await expect.element(screen.getByText(/my recipe/i)).toBeVisible();
     await expect.element(screen.getByText(/a third recipe/i)).toBeVisible();
@@ -29,7 +34,12 @@ describe('RecipeListing', () => {
 
     const screen = await appRender(<RecipeListing />);
 
-    await waitForLoading(screen);
+    await expect
+      .element(screen.getByRole('status', { name: /loading/i }))
+      .toBeVisible();
+    await expect
+      .element(screen.getByRole('status', { name: /loading/i }))
+      .toBeInTheDocument();
 
     await expect
       .element(screen.getByText(/there was a problem loading your recipes/i))
@@ -49,6 +59,12 @@ describe('RecipeListing', () => {
     );
 
     const screen = await appRender(<RecipeListing />);
-    await waitForLoading(screen);
+
+    await expect
+      .element(screen.getByRole('status', { name: /loading/i }))
+      .toBeVisible();
+    await expect
+      .element(screen.getByRole('status', { name: /loading/i }))
+      .toBeInTheDocument();
   });
 });

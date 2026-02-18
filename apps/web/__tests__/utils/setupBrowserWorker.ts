@@ -2,6 +2,7 @@ import { setupWorker } from 'msw/browser';
 import { defaultRecipe } from './fixtures/recipe';
 import {
   makeGetRecipe,
+  makeGetRecipeBySlug,
   makeGetRecipes,
   makePostRecipe,
   makePutRecipe,
@@ -9,6 +10,7 @@ import {
 
 export const worker = setupWorker(
   makeGetRecipe(defaultRecipe, { delay: 'real' }),
+  makeGetRecipeBySlug(defaultRecipe, { delay: 'real' }),
   makeGetRecipes(
     [
       defaultRecipe,

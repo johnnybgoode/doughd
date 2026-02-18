@@ -1,4 +1,4 @@
-import type { Recipe } from '@repo/database';
+import type { RecipePureType } from '@repo/database/schemas';
 import { Button } from '@repo/ui/components/button';
 import {
   Card,
@@ -11,7 +11,7 @@ import { Heading } from '@repo/ui/components/typography';
 import { Link } from 'react-router';
 
 type RecipeCardProps = {
-  recipe: Recipe;
+  recipe: RecipePureType;
 };
 export const RecipeCard = ({ recipe }: RecipeCardProps) => {
   return (

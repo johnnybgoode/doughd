@@ -2,11 +2,16 @@ import type { ReactElement } from 'react';
 import { expect } from 'vitest';
 import type { Locator } from 'vitest/browser';
 import { type RenderResult, render } from 'vitest-browser-react';
-import { withProviders } from './withProviders';
+import { type ProviderProps, withProviders } from './withProviders';
 
-export const appRender = (ui: ReactElement) => render(withProviders(ui));
+export const appRender = (ui: ReactElement, options?: ProviderProps) =>
+  render(withProviders(ui, options));
 
 // TODO move to separate `utils` module after separating mocks / utils.
+export const delay = (time: number) => {
+  return new Promise(resolve => setTimeout(resolve, time));
+};
+
 type WaitForElementToBeRemovedOptions = {
   maxTries?: number;
   strict?: boolean;

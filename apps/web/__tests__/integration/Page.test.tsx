@@ -1,6 +1,6 @@
-import { render, screen } from '@testing-library/react';
-import { describe, it } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { Page } from '@/components/Page';
+import { appRender } from '../utils/render/renderBrowser';
 
 const TestHeader = () => <>Header</>;
 const TestContent = () => <>Test Content</>;
@@ -10,21 +10,21 @@ const ChildWillThrow = () => {
 
 describe('Page', () => {
   it('renders header and children', async () => {
-    render(
+    const screen = await appRender(
       <Page header={<TestHeader />}>
         <TestContent />
       </Page>,
     );
-    await screen.findByText(/header/i);
-    await screen.findByText(/test content/i);
+    await expect.element(screen.getByText(/header/i)).toBeVisible();
+    await expect.element(screen.getByText(/test content/i)).toBeVisible();
   });
 
   it('renders header if child throws', async () => {
-    render(
+    const screen = await appRender(
       <Page header={<TestHeader />}>
         <ChildWillThrow />
       </Page>,
     );
-    await screen.findByText(/header/i);
+    await expect.element(screen.getByText(/header/i)).toBeVisible();
   });
 });

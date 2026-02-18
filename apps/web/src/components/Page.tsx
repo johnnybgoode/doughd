@@ -11,9 +11,9 @@ export const Page = ({ children, header }: PageProps) => {
     <div className="position-relative min-h-screen overflow-hidden">
       <div className="flex h-screen flex-col">
         {header && <div className="p-6">{header}</div>}
-        <div className="flex-1 place-content-center overflow-y-scroll bg-gray-50 p-4">
+        <div className="flex-1 overflow-y-scroll bg-gray-50 p-4">
           <ErrorBoundary fallback={<ErrorEmptyState action={null} />}>
-            <Suspense fallback={<Loading center={true} size="lg" />}>
+            <Suspense fallback={<Loading fullscreen={true} size="lg" />}>
               {children}
             </Suspense>
           </ErrorBoundary>

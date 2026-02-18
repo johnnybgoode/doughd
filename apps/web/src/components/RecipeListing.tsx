@@ -33,7 +33,7 @@ export const RecipeListing = () => {
         <ErrorEmptyState message="There was a problem loading your recipes. Please refresh to try again." />
       }
     >
-      <Suspense fallback={<Loading center={true} size="lg" />}>
+      <Suspense fallback={<Loading fullscreen={true} size="lg" />}>
         <RecipeListingGrid className="mx-auto max-w-[1280px] flex-grow-1" />
       </Suspense>
     </ErrorBoundary>

@@ -5,6 +5,7 @@ import { defineConfig } from 'vite';
 
 export const alias = {
   '@': path.resolve(__dirname, 'src'),
+  '@/config': path.resolve(__dirname, 'src/config'),
   '@/components': path.resolve(__dirname, 'src/components'),
   '@/data': path.resolve(__dirname, 'src/data'),
   '@/lib': path.resolve(__dirname, 'src/lib'),

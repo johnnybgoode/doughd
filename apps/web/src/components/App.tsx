@@ -1,32 +1,23 @@
-import { Heading } from '@repo/ui/components/typography';
-import React from 'react';
-import { Link, Navigate, Route, Routes } from 'react-router';
-import { Page } from './Page';
+import { useMemo } from 'react';
+import { ErrorBoundary } from 'react-error-boundary';
+import {
+  createBrowserRouter,
+  type RouteObject,
+  RouterProvider,
+} from 'react-router';
+import { appRoutes } from '@/config/routes';
+import { ErrorEmptyState } from './EmptyState';
 
-const AsyncRecipeListing = React.lazy(async () =>
-  import('./RecipeListing').then(m => ({ default: m.RecipeListing })),
-);
+type AppProps = {
+  routeConfig?: RouteObject[];
+};
+export const App = ({ routeConfig }: AppProps) => {
+  const routes = routeConfig || appRoutes;
+  const appRouter = useMemo(() => createBrowserRouter(routes), [routes]);
 
-const AsyncRecipeDetailView = React.lazy(async () =>
-  import('./RecipeDetail').then(m => ({ default: m.RecipeDetailView })),
-);
-
-export const App = () => {
   return (
-    <Page
-      header={
-        <Heading level="2">
-          <Link className="hover:text-[var(--primary)]" to="/recipes">
-            Dough'd
-          </Link>
-        </Heading>
-      }
-    >
-      <Routes>
-        <Route element={<AsyncRecipeDetailView />} path="/recipes/:slug" />
-        <Route element={<AsyncRecipeListing />} path="/recipes" />
-        <Route element={<Navigate to="/recipes" />} path="*" />
-      </Routes>
-    </Page>
+    <ErrorBoundary fallback={<ErrorEmptyState action={null} />}>
+      <RouterProvider router={appRouter} />
+    </ErrorBoundary>
   );
 };

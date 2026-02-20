@@ -1,5 +1,4 @@
-import type { RecipeModel } from '@repo/database/models/Recipe';
-import type { RecipeInputType } from '@repo/database/schemas';
+import type { RecipeInputType, RecipePureType } from '@repo/database/schemas';
 import {
   type DefaultBodyType,
   delay as delayFn,
@@ -34,11 +33,23 @@ export const makeGetRecipe = (
   { id, ...rest }: Partial<RecipeInputType> & { id: number },
   { delay, ...options }: HttpResponseOptions = defaultHandlerOptions,
 ) =>
-  http.get<PathParams, DefaultBodyType, RecipeModel>(
+  http.get<PathParams, DefaultBodyType, RecipePureType>(
     `/api/recipe/${id}`,
     async () => {
       await delayFn(delay);
       return HttpResponse.json(makeRecipe({ id, ...rest }), options);
+    },
+  );
+
+export const makeGetRecipeBySlug = (
+  { slug, ...rest }: Partial<RecipeInputType> & { slug: string },
+  { delay, ...options }: HttpResponseOptions = defaultHandlerOptions,
+) =>
+  http.get<PathParams, DefaultBodyType, RecipePureType>(
+    `/api/recipe/by-slug/${slug}`,
+    async () => {
+      await delayFn(delay);
+      return HttpResponse.json(makeRecipe({ slug, ...rest }), options);
     },
   );
 

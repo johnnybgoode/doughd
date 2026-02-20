@@ -1,7 +1,6 @@
-import type { RecipeModel } from '@repo/database/models/Recipe';
-import type { RecipeInputType } from '@repo/database/schemas';
+import type { RecipeInputType, RecipePureType } from '@repo/database/schemas';
 
-export const defaultRecipe: RecipeModel = {
+export const defaultRecipe: RecipePureType = {
   id: 1,
   title: 'Best sourdough',
   slug: 'best-sourdough',
@@ -19,13 +18,13 @@ export const defaultRecipe: RecipeModel = {
       title: 'Feed starter',
       description:
         'Mix parts water and flour with 1 part starter (2:2:1)\nCover and let rest for 3-4 hours',
-      time: 60 * 1, // 60 * 60 * 3
+      time: 10 * 1,
     },
     {
       title: 'Mix dough',
       description:
         'Thoroughly mix flour, water and starter\nCover and let rest for 30 miuntes',
-      time: 60 * 1, // 60 * 30
+      time: 10 * 1,
     },
   ],
   archived: false,
@@ -44,4 +43,4 @@ export const makeRecipe = <T extends Partial<RecipeInputType & { id: number }>>(
     steps: [],
     archived: false,
     ...recipe,
-  }) as RecipeModel;
+  }) as RecipePureType;

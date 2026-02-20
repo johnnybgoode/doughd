@@ -46,5 +46,7 @@ export const ErrorEmptyState = ({
   header = 'Something went wrong',
   message = 'There was a problem loading this page. Please try again later.',
 }: Partial<EmptyStateProps>) => (
-  <EmptyState action={action} header={header} Icon={Icon} message={message} />
+  <div className="min-h-[100%] place-content-center">
+    <EmptyState action={action} header={header} Icon={Icon} message={message} />
+  </div>
 );

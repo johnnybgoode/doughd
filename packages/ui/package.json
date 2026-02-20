@@ -4,9 +4,8 @@
   "private": true,
   "version": "0.0.0",
   "scripts": {
-    "fix-shadcn-imports": "sed -i.bak \"s#@repo/ui#..#\" ./src/components/*.tsx && rm ./src/components/*.bak",
-    "shadcn": "pnpm dlx shadcn@latest",
-    "postshadcn": "pnpm run fix-shadcn-imports"
+    "__fix-shadcn-imports": "sed -i.bak \"s#@repo/ui#..#\" ./src/components/*.tsx && rm ./src/components/*.bak",
+    "shadcn": "pnpm dlx shadcn@latest"
   },
   "exports": {
     "./components/*": "./src/components/*.tsx",

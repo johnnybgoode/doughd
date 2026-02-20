@@ -1,6 +1,6 @@
 import { QueryClientProvider } from '@tanstack/react-query';
 import type { ReactElement } from 'react';
-import { BrowserRouter } from 'react-router';
+import { MemoryRouter } from 'react-router';
 import { makeQueryClient } from '@/lib/queryClient';
 
 const mockDependencies = () => {
@@ -14,12 +14,19 @@ const mockDependencies = () => {
   } as const;
 };
 
-export const withProviders = (ui: ReactElement) => {
+export type ProviderProps = {
+  initialEntries?: string[];
+};
+
+export const withProviders = (
+  ui: ReactElement,
+  { initialEntries }: ProviderProps = {},
+) => {
   const { queryClient } = mockDependencies();
 
   return (
-    <BrowserRouter>
+    <MemoryRouter initialEntries={initialEntries}>
       <QueryClientProvider client={queryClient}>{ui}</QueryClientProvider>,
-    </BrowserRouter>
+    </MemoryRouter>
   );
 };

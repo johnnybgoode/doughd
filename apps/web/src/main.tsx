@@ -9,7 +9,7 @@ const enableMocking = async () => {
   if (!(import.meta.env.DEV && import.meta.env.VITE_MOCK_SERVER === 'true')) {
     return;
   }
-  const { worker } = await import('./../__tests__/utils/setupBrowserWorker');
+  const { worker } = await import('../__tests__/mocks/setupBrowserWorker');
   worker.start({
     onUnhandledRequest: 'bypass',
   });

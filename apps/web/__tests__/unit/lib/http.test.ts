@@ -1,7 +1,7 @@
 import { HttpResponse, http as httpMsw } from 'msw';
 import { describe, expect, it } from 'vitest';
 import http from '../../../src/lib/http';
-import { server } from '../../utils/setupServer';
+import { server } from '../../mocks/setupServer';
 
 type TestResponse = { ok: boolean };
 

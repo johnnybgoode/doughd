@@ -2,10 +2,10 @@ import { describe, type ExpectPollOptions, expect } from 'vitest';
 import type { RenderResult } from 'vitest-browser-react';
 import { App } from '@/components/App';
 import { appRoutes } from '@/config/routes';
-import { defaultRecipe, makeRecipe } from '../utils/fixtures/recipe';
-import { makeGetRecipeBySlug, makeGetRecipes } from '../utils/handlers/recipe';
-import { renderWithProviders } from '../utils/render/renderBrowser';
-import { test } from '../utils/setupWorker';
+import { defaultRecipe, makeRecipe } from '../mocks/fixtures/recipe';
+import { makeGetRecipeBySlug, makeGetRecipes } from '../mocks/handlers/recipe';
+import { test } from '../mocks/setupWorker';
+import { renderWithProviders } from '../utils/renderBrowser';
 
 const waitForLoading = async (
   screen: RenderResult,

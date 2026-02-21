@@ -1,9 +1,9 @@
 import { describe, expect } from 'vitest';
 import { RecipeListing } from '@/components/RecipeListing';
-import { makeRecipe } from '../utils/fixtures/recipe';
-import { makeGetRecipes } from '../utils/handlers/recipe';
-import { appRender } from '../utils/render/renderBrowser';
-import { test } from '../utils/setupWorker';
+import { makeRecipe } from '../mocks/fixtures/recipe';
+import { makeGetRecipes } from '../mocks/handlers/recipe';
+import { test } from '../mocks/setupWorker';
+import { appRender } from '../utils/renderBrowser';
 
 describe('RecipeListing', () => {
   test('renders recipe cards', async ({ worker }) => {

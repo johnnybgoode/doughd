@@ -1,6 +1,6 @@
 import type { ReactElement } from 'react';
 import { type RenderOptions, render } from 'vitest-browser-react';
-import { type AppProviderProps, AppProviders } from './AppProviders';
+import { type AppProviderProps, AppProviders } from '../AppProviders';
 
 type AppRenderOptions = AppProviderProps & Omit<RenderOptions, 'wrapper'>;
 

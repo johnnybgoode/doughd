@@ -2,8 +2,8 @@ import { describe, expect } from 'vitest';
 import { RecipeDetail } from '@/components/RecipeDetail';
 import { makeRecipe } from '../mocks/fixtures/recipe';
 import { makeGetRecipeBySlug } from '../mocks/handlers/recipe';
+import { appRender } from '../utils/browser/render';
 import { test } from '../utils/browser/test';
-import { appRender } from '../utils/renderBrowser';
 
 const delay = (time: number) => {
   return new Promise(resolve => setTimeout(resolve, time));

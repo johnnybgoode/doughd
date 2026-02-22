@@ -5,7 +5,7 @@ import { appRoutes } from '@/config/routes';
 import { defaultRecipe, makeRecipe } from '../mocks/fixtures/recipe';
 import { makeGetRecipeBySlug, makeGetRecipes } from '../mocks/handlers/recipe';
 import { test } from '../mocks/setupWorker';
-import { renderWithProviders } from '../utils/renderBrowser';
+import { appRender } from '../utils/renderBrowser';
 
 const waitForLoading = async (
   screen: RenderResult,
@@ -40,9 +40,9 @@ describe('App', () => {
       ]),
     );
 
-    const screen = await renderWithProviders(
-      <App routeConfig={[...appRoutes]} />,
-    );
+    const screen = await appRender(<App routeConfig={[...appRoutes]} />, {
+      mockRouter: false,
+    });
 
     await expect
       .element(screen.getByRole('heading', { name: /dough'd/i }))
@@ -74,9 +74,9 @@ describe('App', () => {
       ]),
     );
 
-    const screen = await renderWithProviders(
-      <App routeConfig={[...appRoutes]} />,
-    );
+    const screen = await appRender(<App routeConfig={[...appRoutes]} />, {
+      mockRouter: false,
+    });
     // Detail page
     await screen.getByRole('link', { name: /my recipe/i }).click();
     await expect
@@ -105,8 +105,9 @@ describe('App', () => {
       ),
     );
 
-    const screen = await renderWithProviders(
+    const screen = await appRender(
       <App routeConfig={[...appRoutes, { path: '/foo' }]} />,
+      { mockRouter: false },
     );
     await waitForLoading(screen);
     await screen.getByRole('link', { name: /my recipe/i }).click();

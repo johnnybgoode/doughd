@@ -48,7 +48,6 @@ describe('RecipeDetail', () => {
             },
           ],
         }),
-        { delay: 'real' },
       ),
     );
 

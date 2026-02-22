@@ -30,7 +30,7 @@ describe('RecipeListing', () => {
   });
 
   test('renders error on fetch failure', async ({ worker }) => {
-    worker.use(makeGetRecipes(undefined, { status: 500 }));
+    worker.use(makeGetRecipes([], { status: 500 }));
 
     const screen = await appRender(<RecipeListing />);
 

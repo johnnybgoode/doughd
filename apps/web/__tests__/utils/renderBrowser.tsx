@@ -19,8 +19,3 @@ export const appRender = (ui: ReactElement, options?: AppRenderOptions) => {
     renderOptions,
   );
 };
-
-// TODO move to separate `utils` module after separating mocks / utils.
-export const delay = (time: number) => {
-  return new Promise(resolve => setTimeout(resolve, time));
-};

@@ -2,7 +2,7 @@ import { describe, expect } from 'vitest';
 import { RecipeDetail } from '@/components/RecipeDetail';
 import { makeRecipe } from '../mocks/fixtures/recipe';
 import { makeGetRecipeBySlug } from '../mocks/handlers/recipe';
-import { test } from '../mocks/setupWorker';
+import { test } from '../utils/browser/test';
 import { appRender } from '../utils/renderBrowser';
 
 const delay = (time: number) => {

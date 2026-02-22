@@ -29,7 +29,6 @@ const config = mergeConfig(
             name: 'unit',
             include: ['**/unit/**/*.test.ts?(x)'],
             environment: 'happy-dom',
-            globals: true,
           },
         }),
         defineProject({
@@ -43,7 +42,6 @@ const config = mergeConfig(
           test: {
             name: 'integration',
             include: ['**/integration/*.test.ts?(x)'],
-            isolate: true,
             browser: {
               provider: playwright(),
               enabled: true,

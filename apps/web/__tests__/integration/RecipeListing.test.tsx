@@ -2,7 +2,7 @@ import { describe, expect } from 'vitest';
 import { RecipeListing } from '@/components/RecipeListing';
 import { makeRecipe } from '../mocks/fixtures/recipe';
 import { makeGetRecipes } from '../mocks/handlers/recipe';
-import { test } from '../mocks/setupWorker';
+import { test } from '../utils/browser/test';
 import { appRender } from '../utils/renderBrowser';
 
 describe('RecipeListing', () => {

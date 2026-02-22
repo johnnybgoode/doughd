@@ -4,7 +4,7 @@ import { App } from '@/components/App';
 import { appRoutes } from '@/config/routes';
 import { defaultRecipe, makeRecipe } from '../mocks/fixtures/recipe';
 import { makeGetRecipeBySlug, makeGetRecipes } from '../mocks/handlers/recipe';
-import { test } from '../mocks/setupWorker';
+import { test } from '../utils/browser/test';
 import { appRender } from '../utils/renderBrowser';
 
 const waitForLoading = async (

@@ -1,9 +1,9 @@
 import { describe, expect } from 'vitest';
 import { RecipeListing } from '@/components/RecipeListing';
-import { makeRecipe } from '../utils/fixtures/recipe';
-import { makeGetRecipes } from '../utils/handlers/recipe';
-import { appRender } from '../utils/render/renderBrowser';
-import { test } from '../utils/setupWorker';
+import { makeRecipe } from '../mocks/fixtures/recipe';
+import { makeGetRecipes } from '../mocks/handlers/recipe';
+import { appRender } from '../utils/browser/render';
+import { test } from '../utils/browser/test';
 
 describe('RecipeListing', () => {
   test('renders recipe cards', async ({ worker }) => {
@@ -30,7 +30,7 @@ describe('RecipeListing', () => {
   });
 
   test('renders error on fetch failure', async ({ worker }) => {
-    worker.use(makeGetRecipes(undefined, { status: 500 }));
+    worker.use(makeGetRecipes([], { status: 500 }));
 
     const screen = await appRender(<RecipeListing />);
 

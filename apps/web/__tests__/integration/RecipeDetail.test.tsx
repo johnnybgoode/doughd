@@ -1,9 +1,9 @@
 import { describe, expect } from 'vitest';
 import { RecipeDetail } from '@/components/RecipeDetail';
-import { makeRecipe } from '../utils/fixtures/recipe';
-import { makeGetRecipeBySlug } from '../utils/handlers/recipe';
-import { appRender } from '../utils/render/renderBrowser';
-import { test } from '../utils/setupWorker';
+import { makeRecipe } from '../mocks/fixtures/recipe';
+import { makeGetRecipeBySlug } from '../mocks/handlers/recipe';
+import { appRender } from '../utils/browser/render';
+import { test } from '../utils/browser/test';
 
 const delay = (time: number) => {
   return new Promise(resolve => setTimeout(resolve, time));
@@ -48,7 +48,6 @@ describe('RecipeDetail', () => {
             },
           ],
         }),
-        { delay: 'real' },
       ),
     );
 

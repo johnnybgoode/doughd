@@ -4,16 +4,7 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { App } from '@/components/App';
 import queryClient from '@/lib/queryClient';
-
-const enableMocking = async () => {
-  if (!(import.meta.env.DEV && import.meta.env.VITE_MOCK_SERVER === 'true')) {
-    return;
-  }
-  const { worker } = await import('./../__tests__/utils/setupBrowserWorker');
-  worker.start({
-    onUnhandledRequest: 'bypass',
-  });
-};
+import { enableMocking } from '../__tests__/mocks/enableBrowserMocking';
 
 enableMocking()
   .then(() => {

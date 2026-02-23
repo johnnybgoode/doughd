@@ -5,7 +5,7 @@ import { useSuspenseQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 import { useParams } from 'react-router';
-import { getOneRecipeBySlug } from '@/data/recipe';
+import { recipeQueries } from '@/data/recipe';
 import { ErrorEmptyState } from './EmptyState';
 import { RecipeIngredients as Ingredients } from './RecipeIngredients';
 import { RecipeLayout } from './RecipeLayout';
@@ -15,10 +15,9 @@ type RecipeDetailProps = {
   slug: string;
 };
 export function RecipeDetail({ slug }: RecipeDetailProps) {
-  const { data: recipe } = useSuspenseQuery({
-    queryFn: () => getOneRecipeBySlug(slug!),
-    queryKey: [`recipe--${slug}`],
-  });
+  const { data: recipe } = useSuspenseQuery(
+    recipeQueries.getOneBySlugQuery(slug),
+  );
   const [isStarted, setIsStarted] = useState(false);
 
   return (

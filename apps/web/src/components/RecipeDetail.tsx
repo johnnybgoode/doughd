@@ -3,20 +3,16 @@ import { Image } from '@repo/ui/components/image';
 import { Heading } from '@repo/ui/components/typography';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { useState } from 'react';
-import { ErrorBoundary } from 'react-error-boundary';
 import { useParams } from 'react-router';
 import { recipeQueries } from '@/data/recipe';
-import { ErrorEmptyState } from './EmptyState';
 import { RecipeIngredients as Ingredients } from './RecipeIngredients';
 import { RecipeLayout } from './RecipeLayout';
 import { RecipeSteps as Steps } from './RecipeSteps';
 
-type RecipeDetailProps = {
-  slug: string;
-};
-export function RecipeDetail({ slug }: RecipeDetailProps) {
+export function RecipeDetail() {
+  const { slug } = useParams();
   const { data: recipe } = useSuspenseQuery(
-    recipeQueries.getOneBySlugQuery(slug),
+    recipeQueries.getOneBySlugQuery(slug!),
   );
   const [isStarted, setIsStarted] = useState(false);
 
@@ -60,20 +56,3 @@ export function RecipeDetail({ slug }: RecipeDetailProps) {
     </RecipeLayout>
   );
 }
-
-export const RecipeDetailView = () => {
-  const { slug } = useParams();
-  if (!slug) {
-    throw new Error('Missing recipe slug');
-  }
-
-  return (
-    <ErrorBoundary
-      fallback={
-        <ErrorEmptyState message="There was a problem loading this recipe. Please refresh to try again." />
-      }
-    >
-      <RecipeDetail slug={slug} />
-    </ErrorBoundary>
-  );
-};

@@ -1,38 +1,21 @@
+import { cn } from '@repo/ui/lib/utils';
 import { useSuspenseQuery } from '@tanstack/react-query';
-import { Suspense } from 'react';
-import { ErrorBoundary } from 'react-error-boundary';
 import { recipeQueries } from '@/data/recipe';
-import { ErrorEmptyState } from './EmptyState';
-import { Loading } from './Loading';
 import { RecipeCard } from './RecipeCard';
 
-const RecipeListingGrid = ({ className }: { className?: string }) => {
+export const RecipeListing = () => {
   const { data } = useSuspenseQuery(recipeQueries.getAllQuery());
 
   const classes = [
+    'mx-auto max-w-[1280px] flex-grow-1',
     'grid grid-cols-[minmax(1,384px)] gap-4 place-items-center sm:grid-cols-[repeat(2,minmax(0,384px))] lg:grid-cols-[repeat(3,minmax(0,384px))]',
-    className,
   ];
 
   return (
-    <div className={classes.join(' ')}>
+    <div className={cn(classes)}>
       {data?.map(recipe => (
         <RecipeCard key={recipe.id} recipe={recipe} />
       ))}
     </div>
-  );
-};
-
-export const RecipeListing = () => {
-  return (
-    <ErrorBoundary
-      fallback={
-        <ErrorEmptyState message="There was a problem loading your recipes. Please refresh to try again." />
-      }
-    >
-      <Suspense fallback={<Loading fullscreen={true} size="lg" />}>
-        <RecipeListingGrid className="mx-auto max-w-[1280px] flex-grow-1" />
-      </Suspense>
-    </ErrorBoundary>
   );
 };

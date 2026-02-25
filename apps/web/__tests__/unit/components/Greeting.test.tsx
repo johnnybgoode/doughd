@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react';
 import { describe } from 'vitest';
 import { Greeting } from '../../../src/components/Greeting';
 import { makeGetApiHandler } from '../../mocks/handlers/demo';
-import { it } from '../../utils/node/test';
+import { it } from '../../utils/node';
 
 describe('Greeting', () => {
   it('renders a message', async ({ server }) => {

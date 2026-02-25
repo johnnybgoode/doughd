@@ -1,7 +1,7 @@
 import { screen } from '@testing-library/react';
 import { describe, it } from 'vitest';
 import { ErrorAlert } from '@/components/ErrorAlert';
-import { appRender } from '../../utils/node/render';
+import { appRender } from '../../utils/node';
 
 describe('ErrorWarning', () => {
   it('renders', async () => {

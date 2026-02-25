@@ -30,6 +30,22 @@ export const appRoutes: RouteObject[] = [
         ),
       },
       {
+        path: '/recipes/:id/edit',
+        hydrateFallbackElement: <Loading fullscreen={true} size="lg" />,
+        lazy: () =>
+          import('@/components/RecipeForm').then(m => ({
+            Component: m.RecipeEdit,
+          })),
+        loader: async ({ params }) => {
+          const query = recipeQueries.getOneBySlugQuery(params.id!);
+          const data = await queryClient.ensureQueryData(query);
+          if (data && data.id) {
+            queryClient.setQueryData([query.queryKey[0], data.slug], data);
+          }
+          return data;
+        },
+      },
+      {
         path: '/recipes',
         lazy: async () =>
           import('@/components/RecipeListing').then(m => ({

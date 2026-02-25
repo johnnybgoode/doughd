@@ -1,34 +1,9 @@
-import { describe, type ExpectPollOptions, expect } from 'vitest';
-import type { RenderResult } from 'vitest-browser-react';
+import { describe, expect } from 'vitest';
 import { App } from '@/components/App';
-import { appRoutes } from '@/config/routes';
 import { defaultRecipe, makeRecipe } from '../mocks/fixtures/recipe';
 import { makeGetRecipeBySlug, makeGetRecipes } from '../mocks/handlers/recipe';
-import { appRender } from '../utils/browser/render';
-import { test } from '../utils/browser/test';
-
-const waitForLoading = async (
-  screen: RenderResult,
-  options?: { strict?: boolean } & ExpectPollOptions,
-) => {
-  const { strict, ...expectOptions } = {
-    strict: true,
-    timeout: 1000,
-    ...options,
-  };
-  try {
-    await expect
-      .element(screen.getByRole('status', { name: /loading/i }), expectOptions)
-      .toBeInTheDocument();
-    await expect
-      .element(screen.getByRole('status', { name: /loading/i }), expectOptions)
-      .not.toBeInTheDocument();
-  } catch (e: unknown) {
-    if (strict) {
-      throw e;
-    }
-  }
-};
+import { appRender, test, waitForLoading } from '../utils/browser';
+import { createMockRouter } from '../utils/createMockRouter';
 
 describe('App', () => {
   test('displays recipe listing by default', async ({ worker }) => {
@@ -40,9 +15,7 @@ describe('App', () => {
       ]),
     );
 
-    const screen = await appRender(<App routeConfig={[...appRoutes]} />, {
-      mockRouter: false,
-    });
+    const screen = await appRender(<App router={createMockRouter()} />);
 
     await expect
       .element(screen.getByRole('heading', { name: /dough'd/i }))
@@ -74,9 +47,7 @@ describe('App', () => {
       ]),
     );
 
-    const screen = await appRender(<App routeConfig={[...appRoutes]} />, {
-      mockRouter: false,
-    });
+    const screen = await appRender(<App router={createMockRouter()} />);
     // Detail page
     await screen.getByRole('link', { name: /my recipe/i }).click();
     await expect
@@ -105,10 +76,8 @@ describe('App', () => {
       ),
     );
 
-    const screen = await appRender(
-      <App routeConfig={[...appRoutes, { path: '/foo' }]} />,
-      { mockRouter: false },
-    );
+    const screen = await appRender(<App router={createMockRouter()} />);
+
     await waitForLoading(screen);
     await screen.getByRole('link', { name: /my recipe/i }).click();
     await waitForLoading(screen);

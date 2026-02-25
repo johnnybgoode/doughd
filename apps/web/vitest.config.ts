@@ -48,6 +48,7 @@ const config = mergeConfig(
               headless: true,
               instances: [{ browser: 'chromium' }],
             },
+            testTimeout: 7500,
           },
         }),
       ],

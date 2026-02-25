@@ -2,12 +2,8 @@ import { describe, expect } from 'vitest';
 import { RecipeDetail } from '@/components/RecipeDetail';
 import { makeRecipe } from '../mocks/fixtures/recipe';
 import { makeGetRecipeBySlug } from '../mocks/handlers/recipe';
-import { appRender } from '../utils/browser/render';
-import { test } from '../utils/browser/test';
-
-const delay = (time: number) => {
-  return new Promise(resolve => setTimeout(resolve, time));
-};
+import { renderWithRouter, test, waitForLoading } from '../utils/browser';
+import { delay } from '../utils/delay';
 
 describe('RecipeDetail', () => {
   test('renders ingredients and portions', async ({ worker }) => {
@@ -51,7 +47,10 @@ describe('RecipeDetail', () => {
       ),
     );
 
-    const screen = await appRender(<RecipeDetail slug="my-recipe" />);
+    const screen = await renderWithRouter(<RecipeDetail />, {
+      initialEntries: ['/recipes/my-recipe'],
+      path: '/recipes/:slug',
+    });
 
     await expect
       .element(screen.getByRole('heading', { level: 1, name: /my recipe/i }))
@@ -70,7 +69,7 @@ describe('RecipeDetail', () => {
         makeRecipe({
           id: 1,
           title: 'My recipe',
-          slug: 'my-recipe',
+          slug: 'my-recipe-steps',
           credit: 'Crusty Baker',
           ingredients: [
             {
@@ -105,7 +104,10 @@ describe('RecipeDetail', () => {
       ),
     );
 
-    const screen = await appRender(<RecipeDetail slug="my-recipe" />);
+    const screen = await renderWithRouter(<RecipeDetail />, {
+      initialEntries: ['/recipes/my-recipe-steps'],
+      path: '/recipes/:slug',
+    });
 
     await screen.getByRole('button', { name: /bake/i }).click();
 
@@ -119,5 +121,31 @@ describe('RecipeDetail', () => {
     await expect
       .element(screen.getByRole('button', { name: /start/i }))
       .toBeVisible();
+  });
+
+  test('renders data loading error', async ({ worker }) => {
+    worker.use(
+      makeGetRecipeBySlug(makeRecipe({ slug: 'my-recipe' }), { status: 500 }),
+    );
+
+    const screen = await renderWithRouter(<RecipeDetail />, {
+      initialEntries: ['/recipes/my-recipe'],
+      matcher: r => r.path === '/recipes/:slug',
+    });
+
+    await expect
+      .element(screen.getByText(/there was a problem loading this recipe/i))
+      .toBeVisible();
+  });
+
+  test('renders loading ui', async ({ worker }) => {
+    worker.use(makeGetRecipeBySlug(makeRecipe({ slug: 'my-recipe' })));
+
+    const screen = await renderWithRouter(<RecipeDetail />, {
+      initialEntries: ['/recipes/my-recipe'],
+      matcher: r => r.path === '/recipes/:slug',
+    });
+
+    await waitForLoading(screen);
   });
 });

@@ -1,23 +1,14 @@
-import { useMemo } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
-import {
-  createBrowserRouter,
-  type RouteObject,
-  RouterProvider,
-} from 'react-router';
-import { appRoutes } from '@/config/routes';
+import { RouterProvider, type RouterProviderProps } from 'react-router';
 import { ErrorEmptyState } from './EmptyState';
 
 type AppProps = {
-  routeConfig?: RouteObject[];
+  router: RouterProviderProps['router'];
 };
-export const App = ({ routeConfig }: AppProps) => {
-  const routes = routeConfig || appRoutes;
-  const appRouter = useMemo(() => createBrowserRouter(routes), [routes]);
-
+export const App = ({ router }: AppProps) => {
   return (
     <ErrorBoundary fallback={<ErrorEmptyState action={null} />}>
-      <RouterProvider router={appRouter} />
+      <RouterProvider router={router} />
     </ErrorBoundary>
   );
 };

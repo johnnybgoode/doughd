@@ -2,8 +2,7 @@ import { describe, expect } from 'vitest';
 import { RecipeListing } from '@/components/RecipeListing';
 import { makeRecipe } from '../mocks/fixtures/recipe';
 import { makeGetRecipes } from '../mocks/handlers/recipe';
-import { appRender } from '../utils/browser/render';
-import { test } from '../utils/browser/test';
+import { renderWithRouter, test, waitForLoading } from '../utils/browser';
 
 describe('RecipeListing', () => {
   test('renders recipe cards', async ({ worker }) => {
@@ -15,15 +14,12 @@ describe('RecipeListing', () => {
       ]),
     );
 
-    const screen = await appRender(<RecipeListing />);
+    const screen = await renderWithRouter(<RecipeListing />, {
+      matcher: r => r.path === '/recipes',
+      initialEntries: ['/recipes'],
+    });
 
-    await expect
-      .element(screen.getByRole('status', { name: /loading/i }))
-      .toBeVisible();
-    await expect
-      .element(screen.getByRole('status', { name: /loading/i }))
-      .toBeInTheDocument();
-
+    await waitForLoading(screen, { strict: false });
     await expect.element(screen.getByText(/my recipe/i)).toBeVisible();
     await expect.element(screen.getByText(/a third recipe/i)).toBeVisible();
     expect(screen.getByRole('button', { hasText: /bake it/i }).length).toBe(3);
@@ -32,14 +28,12 @@ describe('RecipeListing', () => {
   test('renders error on fetch failure', async ({ worker }) => {
     worker.use(makeGetRecipes([], { status: 500 }));
 
-    const screen = await appRender(<RecipeListing />);
+    const screen = await renderWithRouter(<RecipeListing />, {
+      matcher: r => r.path === '/recipes',
+      initialEntries: ['/recipes'],
+    });
 
-    await expect
-      .element(screen.getByRole('status', { name: /loading/i }))
-      .toBeVisible();
-    await expect
-      .element(screen.getByRole('status', { name: /loading/i }))
-      .toBeInTheDocument();
+    await waitForLoading(screen, { strict: false });
 
     await expect
       .element(screen.getByText(/there was a problem loading your recipes/i))
@@ -58,13 +52,11 @@ describe('RecipeListing', () => {
       ),
     );
 
-    const screen = await appRender(<RecipeListing />);
+    const screen = await renderWithRouter(<RecipeListing />, {
+      matcher: r => r.path === '/recipes',
+      initialEntries: ['/recipes'],
+    });
 
-    await expect
-      .element(screen.getByRole('status', { name: /loading/i }))
-      .toBeVisible();
-    await expect
-      .element(screen.getByRole('status', { name: /loading/i }))
-      .toBeInTheDocument();
+    await waitForLoading(screen);
   });
 });

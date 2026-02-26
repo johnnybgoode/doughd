@@ -5,6 +5,7 @@ import type {
   ReactElement,
 } from 'react';
 import { cn } from '@repo/ui/lib/utils';
+import { cva, type VariantProps } from 'class-variance-authority';
 
 type HeadingProps = PropsWithChildren<{
   className?: string;
@@ -33,10 +34,25 @@ export function Blockquote({ children }: PropsWithChildren) {
   );
 }
 
-type ListProps = { items: ReactElement[] };
-export function List({ items }: ListProps) {
+const listVariants = cva('my-6 ml-6 [&>li]:mt-2', {
+  variants: {
+    type: {
+      bullet: 'list-disc',
+      number: 'list-decimal',
+      none: 'list-none',
+    },
+  },
+  defaultVariants: {
+    type: 'none',
+  },
+});
+
+type ListProps = { className?: string; items: ReactElement[] } & VariantProps<
+  typeof listVariants
+>;
+export function List({ className, items, type = 'none' }: ListProps) {
   return (
-    <ul className="my-6 ml-6 list-disc [&>li]:mt-2">
+    <ul className={cn(listVariants({ type }), className)}>
       {items.map((item, i) => (
         <li key={i}>{item}</li>
       ))}

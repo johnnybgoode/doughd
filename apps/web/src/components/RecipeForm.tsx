@@ -1,12 +1,15 @@
+import type { RecipePureType } from '@repo/database/schemas';
+import { Button } from '@repo/ui/components/button';
+import { FieldGroup, FieldLegend, FieldSet } from '@repo/ui/components/field';
 import { Image } from '@repo/ui/components/image';
 import { Input } from '@repo/ui/components/input';
-import { Heading } from '@repo/ui/components/typography';
+import { Heading, List } from '@repo/ui/components/typography';
 import { useSuspenseQuery } from '@tanstack/react-query';
+import { PlusIcon } from 'lucide-react';
+import { type ChangeEvent, useCallback, useMemo } from 'react';
 import { useParams } from 'react-router';
 import { useShallow } from 'zustand/react/shallow';
 import { recipeQueries, useRecipeStore } from '@/data/recipe';
-import { defaultRecipe } from '../../__tests__/mocks/fixtures/recipe';
-import { RecipeIngredients as Ingredients } from './RecipeIngredients';
 import { RecipeLayout } from './RecipeLayout';
 
 const TitleInput = () => {
@@ -41,8 +44,93 @@ const CreditInput = () => {
   );
 };
 
-const RecipeForm = () => {
-  const recipe = defaultRecipe;
+const getUpdatePath = (path: string) => {
+  const [index, key] = path.split('-').reverse();
+  return [Number(index), key] as const;
+};
+
+const IngredientsInput = () => {
+  const ingredients = useRecipeStore(state => state.ingredients) || [];
+  const updateField = useRecipeStore.use.updateField();
+
+  const onChange = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      const [index, key] = getUpdatePath(e.currentTarget.name);
+      const nextValue =
+        key === 'value' ? Number(e.currentTarget.value) : e.currentTarget.value;
+
+      updateField('ingredients', prev => {
+        if (typeof prev === 'undefined') {
+          return [{ name: '', value: 0, unit: '' }];
+        }
+        return prev.map((item, i) =>
+          i === Number(index)
+            ? {
+                ...item,
+                [key]: nextValue,
+              }
+            : item,
+        );
+      });
+    },
+    [updateField],
+  );
+
+  const onClickAdd = useCallback(() => {
+    updateField('ingredients', prev => [
+      ...(prev || []),
+      { name: '', value: 0, unit: '' },
+    ]);
+  }, [updateField]);
+
+  const hasEmptyIngredient = useMemo(
+    () => Object.values(ingredients[ingredients.length - 1]).some(v => !v),
+    [ingredients],
+  );
+
+  return (
+    <>
+      <List
+        className="mt-2 mb-0 ml-2"
+        items={ingredients.map((ingredient, i) => (
+          <div className="flex" key={i}>
+            <Input
+              className="grow-1"
+              defaultValue={ingredient.name}
+              name={`name-${i}`}
+              onChange={onChange}
+            />
+            <Input
+              className="basis-[45%]"
+              defaultValue={ingredient.value}
+              name={`value-${i}`}
+              onChange={onChange}
+              type="number"
+            />
+            <Input
+              className="basis-[25%]"
+              defaultValue={ingredient.unit}
+              name={`unit-${i}`}
+              onChange={onChange}
+            />
+          </div>
+        ))}
+      />
+      <div className="flex justify-center">
+        <Button
+          className="size-9 rounded-full"
+          disabled={hasEmptyIngredient}
+          onClick={onClickAdd}
+          variant="outline-primary"
+        >
+          <PlusIcon className="stroke-3" />
+        </Button>
+      </div>
+    </>
+  );
+};
+
+const RecipeForm = ({ recipe }: { recipe: RecipePureType | null }) => {
   return (
     <RecipeLayout>
       <RecipeLayout.Slot name="Image">
@@ -59,13 +147,16 @@ const RecipeForm = () => {
         <CreditInput />
       </RecipeLayout.Slot>
       <RecipeLayout.Slot name="Ingredients">
-        {recipe?.ingredients && recipe?.portions && (
-          <Ingredients
-            disabled={false}
-            ingredients={recipe.ingredients}
-            portions={recipe.portions}
-          />
-        )}
+        <FieldSet>
+          <FieldLegend>
+            <Heading className="text-center text-gray-800" level="4">
+              Ingredients
+            </Heading>
+          </FieldLegend>
+          <FieldGroup className="justify-start gap-4">
+            <IngredientsInput />
+          </FieldGroup>
+        </FieldSet>
       </RecipeLayout.Slot>
       <RecipeLayout.Slot name="Steps"></RecipeLayout.Slot>
     </RecipeLayout>
@@ -81,5 +172,5 @@ export const RecipeEdit = () => {
     useRecipeStore.use.setState()(recipe);
   }
 
-  return <RecipeForm />;
+  return <RecipeForm recipe={recipe} />;
 };

@@ -10,7 +10,7 @@ import { RecipeIngredients as Ingredients } from './RecipeIngredients';
 import { RecipeLayout } from './RecipeLayout';
 
 const TitleInput = () => {
-  const title = useRecipeStore(useShallow(state => state.recipe.title));
+  const title = useRecipeStore(useShallow(state => state.title));
   const updateField = useRecipeStore.use.updateField();
   return (
     <Input
@@ -26,7 +26,7 @@ const TitleInput = () => {
 };
 
 const CreditInput = () => {
-  const credit = useRecipeStore(useShallow(state => state.recipe.credit));
+  const credit = useRecipeStore(useShallow(state => state.credit));
   const updateField = useRecipeStore.use.updateField();
   return (
     <Input
@@ -78,8 +78,7 @@ export const RecipeEdit = () => {
     recipeQueries.getOneQuery(Number(id!)),
   );
   if (recipe !== null) {
-    console.log('SET Recipe', recipe);
-    useRecipeStore.use.setRecipe()(recipe);
+    useRecipeStore.use.setState()(recipe);
   }
 
   return <RecipeForm />;

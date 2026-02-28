@@ -1,7 +1,11 @@
 import type { RecipeInputType, RecipePureType } from '@repo/database/schemas';
 import { createHttpClient } from '@/lib/createHttpClient';
 import { createQueryClient } from '@/lib/createQueryClient';
-import { createSelectors, createStore } from '@/lib/createStore';
+import {
+  createSelectors,
+  createStore,
+  createStoreHooks,
+} from '@/lib/createStore';
 
 export const recipeClient = createHttpClient<
   RecipePureType,
@@ -11,5 +15,6 @@ export const recipeClient = createHttpClient<
 
 export const recipeQueries = createQueryClient('recipes', recipeClient);
 
-export const recipeStore = createStore<RecipePureType>({} as RecipePureType);
+const recipeStore = createStore({} as RecipePureType);
 export const useRecipeStore = createSelectors(recipeStore);
+export const recipeHooks = createStoreHooks(recipeStore);

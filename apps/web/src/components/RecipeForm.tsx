@@ -8,37 +8,30 @@ import { useSuspenseQuery } from '@tanstack/react-query';
 import { PlusIcon } from 'lucide-react';
 import { type ChangeEvent, useCallback, useMemo } from 'react';
 import { useParams } from 'react-router';
-import { useShallow } from 'zustand/react/shallow';
-import { recipeQueries, useRecipeStore } from '@/data/recipe';
+import { recipeHooks, recipeQueries, useRecipeStore } from '@/data/recipe';
 import { RecipeLayout } from './RecipeLayout';
 
 const TitleInput = () => {
-  const title = useRecipeStore(useShallow(state => state.title));
-  const updateField = useRecipeStore.use.updateField();
+  const { value: title, update } = recipeHooks.useField('title');
   return (
     <Input
       className="w-full text-center"
       defaultValue={title}
       name="title"
-      onInput={e => {
-        updateField('title', e.currentTarget.value);
-      }}
+      onInput={e => update(e.currentTarget.value)}
       use="transparent"
     />
   );
 };
 
 const CreditInput = () => {
-  const credit = useRecipeStore(useShallow(state => state.credit));
-  const updateField = useRecipeStore.use.updateField();
+  const { value: credit, update: updateField } = recipeHooks.useField('credit');
   return (
     <Input
       className="px-4 py-1 text-center leading-2"
       defaultValue={credit || undefined}
       name="credit"
-      onInput={e => {
-        updateField('credit', e.currentTarget.value);
-      }}
+      onInput={e => updateField(e.currentTarget.value)}
       use="transparent"
     />
   );
@@ -50,8 +43,11 @@ const getUpdatePath = (path: string) => {
 };
 
 const IngredientsInput = () => {
-  const ingredients = useRecipeStore(state => state.ingredients) || [];
-  const updateField = useRecipeStore.use.updateField();
+  const { value, update: updateField } = recipeHooks.useField(
+    'ingredients',
+    false,
+  );
+  const ingredients = value || [];
 
   const onChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
@@ -59,7 +55,7 @@ const IngredientsInput = () => {
       const nextValue =
         key === 'value' ? Number(e.currentTarget.value) : e.currentTarget.value;
 
-      updateField('ingredients', prev => {
+      updateField(prev => {
         if (typeof prev === 'undefined') {
           return [{ name: '', value: 0, unit: '' }];
         }
@@ -77,16 +73,13 @@ const IngredientsInput = () => {
   );
 
   const onClickAdd = useCallback(() => {
-    updateField('ingredients', prev => [
-      ...(prev || []),
-      { name: '', value: 0, unit: '' },
-    ]);
+    updateField(prev => [...(prev || []), { name: '', value: 0, unit: '' }]);
   }, [updateField]);
 
-  const hasEmptyIngredient = useMemo(
-    () => Object.values(ingredients[ingredients.length - 1]).some(v => !v),
-    [ingredients],
-  );
+  const hasEmptyIngredient = useMemo(() => {
+    const lastIdx = Math.max(ingredients.length - 1, 0);
+    return Object.values(ingredients[lastIdx]).some(v => !v);
+  }, [ingredients]);
 
   return (
     <>

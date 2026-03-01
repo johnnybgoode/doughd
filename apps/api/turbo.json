@@ -7,7 +7,7 @@
     "dev": {
       "inputs": [".env*"],
       "env": ["API_PORT", "API_URL", "DATABASE_URL"],
-      "dependsOn": ["^dev", "^db:migrate"]
+      "dependsOn": ["^db:migrate"]
     },
     "test": {
       "inputs": [".env*"],

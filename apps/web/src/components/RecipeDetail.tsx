@@ -2,8 +2,9 @@ import { Button } from '@repo/ui/components/button';
 import { Image } from '@repo/ui/components/image';
 import { Heading } from '@repo/ui/components/typography';
 import { useSuspenseQuery } from '@tanstack/react-query';
+import { PencilIcon } from 'lucide-react';
 import { useState } from 'react';
-import { useParams } from 'react-router';
+import { Link, useParams } from 'react-router';
 import { recipeQueries } from '@/data/recipe';
 import { RecipeIngredients as Ingredients } from './RecipeIngredients';
 import { RecipeLayout } from './RecipeLayout';
@@ -19,9 +20,20 @@ export function RecipeDetail() {
   return (
     <RecipeLayout>
       <RecipeLayout.Slot name="Image">
-        {recipe?.image && (
-          <Image alt={recipe.title} src={recipe.image} width={250} />
-        )}
+        <div className="group relative">
+          {recipe?.image && (
+            <Image alt={recipe.title} src={recipe.image} width={250} />
+          )}
+          {recipe?.id && (
+            <div className="absolute top-[0] left-[0] z-10 mt-0 mr-0 hidden group-hover:block">
+              <Link to={`/recipes/${recipe?.id}/edit`}>
+                <Button className="cursor-pointer" variant="secondary">
+                  <PencilIcon />
+                </Button>
+              </Link>
+            </div>
+          )}
+        </div>
       </RecipeLayout.Slot>
       <RecipeLayout.Slot name="Title">
         <Heading className="mb-2" level="1">

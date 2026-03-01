@@ -6,7 +6,7 @@ import { Input } from '@repo/ui/components/input';
 import { Heading, List } from '@repo/ui/components/typography';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { PlusIcon } from 'lucide-react';
-import { type ChangeEvent, useCallback, useMemo } from 'react';
+import { useMemo } from 'react';
 import { useParams } from 'react-router';
 import { recipeHooks, recipeQueries, useRecipeStore } from '@/data/recipe';
 import { RecipeLayout } from './RecipeLayout';
@@ -37,44 +37,13 @@ const CreditInput = () => {
   );
 };
 
-const getUpdatePath = (path: string) => {
-  const [index, key] = path.split('-').reverse();
-  return [Number(index), key] as const;
-};
-
 const IngredientsInput = () => {
-  const { value, update: updateField } = recipeHooks.useField(
+  const { value, onAddItem, onChangeItem } = recipeHooks.useMultiValueField(
     'ingredients',
-    false,
+    { name: '', value: 0, unit: '' },
   );
   const ingredients = value || [];
-
-  const onChange = useCallback(
-    (e: ChangeEvent<HTMLInputElement>) => {
-      const [index, key] = getUpdatePath(e.currentTarget.name);
-      const nextValue =
-        key === 'value' ? Number(e.currentTarget.value) : e.currentTarget.value;
-
-      updateField(prev => {
-        if (typeof prev === 'undefined') {
-          return [{ name: '', value: 0, unit: '' }];
-        }
-        return prev.map((item, i) =>
-          i === Number(index)
-            ? {
-                ...item,
-                [key]: nextValue,
-              }
-            : item,
-        );
-      });
-    },
-    [updateField],
-  );
-
-  const onClickAdd = useCallback(() => {
-    updateField(prev => [...(prev || []), { name: '', value: 0, unit: '' }]);
-  }, [updateField]);
+  console.log(ingredients);
 
   const hasEmptyIngredient = useMemo(() => {
     const lastIdx = Math.max(ingredients.length - 1, 0);
@@ -91,20 +60,20 @@ const IngredientsInput = () => {
               className="grow-1"
               defaultValue={ingredient.name}
               name={`name-${i}`}
-              onChange={onChange}
+              onChange={onChangeItem}
             />
             <Input
               className="basis-[45%]"
               defaultValue={ingredient.value}
               name={`value-${i}`}
-              onChange={onChange}
+              onChange={onChangeItem}
               type="number"
             />
             <Input
               className="basis-[25%]"
               defaultValue={ingredient.unit}
               name={`unit-${i}`}
-              onChange={onChange}
+              onChange={onChangeItem}
             />
           </div>
         ))}
@@ -113,7 +82,7 @@ const IngredientsInput = () => {
         <Button
           className="size-9 rounded-full"
           disabled={hasEmptyIngredient}
-          onClick={onClickAdd}
+          onClick={onAddItem}
           variant="outline-primary"
         >
           <PlusIcon className="stroke-3" />

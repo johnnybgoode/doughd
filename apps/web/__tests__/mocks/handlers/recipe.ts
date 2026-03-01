@@ -68,17 +68,22 @@ export const makePutRecipe = (
   recipe?: RecipeInputType,
   { delay, ...options }: HttpResponseOptions = defaultHandlerOptions,
 ) =>
-  http.put<PathParams, RecipeInputType>('/api/recipe', async ({ request }) => {
-    const data = await request.json();
-    await delayFn(delay);
-    return HttpResponse.json(
-      makeRecipe({
-        ...recipe,
-        ...data,
-      }),
-      options,
-    );
-  });
+  http.put<{ id: string }, RecipeInputType>(
+    '/api/recipe/:id',
+    async ({ params, request }) => {
+      const id = params.id;
+      const data = await request.json();
+      await delayFn(delay);
+      return HttpResponse.json(
+        makeRecipe({
+          ...recipe,
+          ...data,
+          id: Number(id),
+        }),
+        options,
+      );
+    },
+  );
 
 export const makeDeleteRecipe = (
   { id, ...rest }: Partial<RecipeInputType> & { id: number },

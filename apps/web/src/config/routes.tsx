@@ -16,13 +16,16 @@ export const appRoutes: RouteObject[] = [
           import('@/components/RecipeDetail').then(m => ({
             Component: m.RecipeDetail,
           })),
-        loader: async ({ params }) => {
-          const query = recipeQueries.getOneBySlugQuery(params.slug!);
-          const data = await queryClient.ensureQueryData(query);
-          if (data && data.id) {
-            queryClient.setQueryData([query.queryKey[0], data.id], data);
+        loader: ({ params }) => {
+          if (!params.slug) {
+            return;
           }
-          return data;
+          queryClient.ensureQueryData(
+            recipeQueries.getOneBySlugQuery(params.slug),
+          );
+          // if (data && data.id) {
+          //   queryClient.setQueryData([query.queryKey[0], data.id], data);
+          // }
         },
         hydrateFallbackElement: <Loading fullscreen={true} size="lg" />,
         errorElement: (
@@ -36,13 +39,17 @@ export const appRoutes: RouteObject[] = [
           import('@/components/RecipeForm').then(m => ({
             Component: m.RecipeEdit,
           })),
-        loader: async ({ params }) => {
-          const query = recipeQueries.getOneBySlugQuery(params.id!);
-          const data = await queryClient.ensureQueryData(query);
-          if (data && data.id) {
-            queryClient.setQueryData([query.queryKey[0], data.slug], data);
+        loader: ({ params }) => {
+          if (!params.id) {
+            // todo throw? log?
+            return;
           }
-          return data;
+          queryClient.ensureQueryData(
+            recipeQueries.getOneQuery(Number(params.id)),
+          );
+          // if (data && data.id) {
+          //   recipeStore.setState(data);
+          // }
         },
       },
       {

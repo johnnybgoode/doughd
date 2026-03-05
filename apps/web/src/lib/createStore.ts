@@ -104,7 +104,7 @@ export const createStoreHooks = <T extends TState>(
     // }
 
     const onChangeItem = useCallback(
-      (e: ChangeEvent<HTMLInputElement>) => {
+      (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const [index, key] = getUpdatePath(e.currentTarget.name);
         const nextValue =
           key === 'value'

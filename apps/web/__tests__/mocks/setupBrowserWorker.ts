@@ -9,7 +9,21 @@ import {
 } from './handlers/recipe';
 
 export const worker = setupWorker(
-  makeGetRecipe(defaultRecipe, { delay: 'real' }),
+  makeGetRecipe(
+    {
+      ...defaultRecipe,
+      steps: [
+        ...defaultRecipe.steps!,
+        {
+          title: 'Fold 1',
+          description:
+            'Stretch and fold, rotate 90 degrees and repeat 3 times for a total of four folds.\nDough should double and feel aerated - like a slightly jiggly belly',
+          time: 1000,
+        },
+      ],
+    },
+    { delay: 'real' },
+  ),
   makeGetRecipeBySlug(defaultRecipe, { delay: 'real' }),
   makeGetRecipes(
     [

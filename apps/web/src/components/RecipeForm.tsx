@@ -1,8 +1,17 @@
 import type { RecipePureType } from '@repo/database/schemas';
 import { Button } from '@repo/ui/components/button';
-import { FieldGroup, FieldLegend, FieldSet } from '@repo/ui/components/field';
+import {
+  Field,
+  FieldDescription,
+  FieldGroup,
+  FieldLabel,
+  FieldLegend,
+  FieldSeparator,
+  FieldSet,
+} from '@repo/ui/components/field';
 import { Image } from '@repo/ui/components/image';
 import { Input } from '@repo/ui/components/input';
+import { Textarea } from '@repo/ui/components/textarea';
 import { Heading, List } from '@repo/ui/components/typography';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { PlusIcon } from 'lucide-react';
@@ -43,7 +52,6 @@ const IngredientsInput = () => {
     { name: '', value: 0, unit: '' },
   );
   const ingredients = value || [];
-  console.log(ingredients);
 
   const hasEmptyIngredient = useMemo(() => {
     const lastIdx = Math.max(ingredients.length - 1, 0);
@@ -92,6 +100,74 @@ const IngredientsInput = () => {
   );
 };
 
+const StepsInput = () => {
+  const { value, onAddItem, onChangeItem } = recipeHooks.useMultiValueField(
+    'steps',
+    {
+      title: '',
+      description: '',
+      time: 0,
+    },
+  );
+  const steps = value || [];
+
+  const isEmptyLastItem = useMemo(() => {
+    const lastIdx = Math.max(steps.length - 1, 0);
+    return Object.values(steps[lastIdx]).some(v => !v);
+  }, [steps]);
+
+  return (
+    <>
+      {steps.map((step, idx) => (
+        <>
+          <FieldGroup className="gap-3" key={idx}>
+            <Field orientation="horizontal">
+              <FieldLabel className="flex-no-wrap">{`${idx + 1}`}</FieldLabel>
+              <Input
+                defaultValue={step.title}
+                name={`title-${idx}`}
+                onChange={onChangeItem}
+              />
+            </Field>
+            <Field>
+              <Textarea
+                defaultValue={step.description}
+                name={`description-${idx}`}
+                onChange={onChangeItem}
+              />
+            </Field>
+            <Field className="flex-wrap" orientation="horizontal">
+              <FieldLabel className="basis-1">Time</FieldLabel>
+              <Input
+                className="basis-auto"
+                defaultValue={step.time}
+                onChange={onChangeItem}
+              />
+              <FieldDescription className="basis-full">
+                Time in minutes to wait before starting the next step. Setting a
+                time here will enable the timer in baking view.
+              </FieldDescription>
+            </Field>
+          </FieldGroup>
+          {idx < steps.length && <FieldSeparator />}
+        </>
+      ))}
+      <Field>
+        <div className="flex justify-center">
+          <Button
+            className="size-9 rounded-full"
+            disabled={isEmptyLastItem}
+            onClick={onAddItem}
+            variant="outline-primary"
+          >
+            <PlusIcon className="stroke-3" />
+          </Button>
+        </div>
+      </Field>
+    </>
+  );
+};
+
 const RecipeForm = ({ recipe }: { recipe: RecipePureType | null }) => {
   return (
     <RecipeLayout>
@@ -120,7 +196,16 @@ const RecipeForm = ({ recipe }: { recipe: RecipePureType | null }) => {
           </FieldGroup>
         </FieldSet>
       </RecipeLayout.Slot>
-      <RecipeLayout.Slot name="Steps"></RecipeLayout.Slot>
+      <RecipeLayout.Slot name="Steps">
+        <FieldSet>
+          <FieldLegend>
+            <Heading className="text-center text-gray-800" level="4">
+              Steps
+            </Heading>
+          </FieldLegend>
+          <StepsInput />
+        </FieldSet>
+      </RecipeLayout.Slot>
     </RecipeLayout>
   );
 };

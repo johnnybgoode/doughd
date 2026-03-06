@@ -216,7 +216,7 @@ export const RecipeEdit = () => {
     recipeQueries.getOneQuery(Number(id!)),
   );
   if (recipe !== null) {
-    useRecipeStore.use.setState()(recipe);
+    useRecipeStore.use.setData()(recipe);
   }
 
   return <RecipeForm recipe={recipe} />;

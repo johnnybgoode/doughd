@@ -7,20 +7,21 @@ import { shallow } from 'zustand/vanilla/shallow';
 import type { ElementOf, FilterKeys } from '@/utils/types';
 
 type Producer<T> = (draft: Draft<T>) => T;
-type Updater<T> = Draft<T> | Producer<T>;
+type Update<T> = T | Producer<T>;
 
 type TState = object;
 type TStore<T extends TState> = ReturnType<typeof createStore<T>>;
 
-type TStoreState<T extends TState> =
-  TStore<T> extends { getState: () => infer T } ? T : never;
-type TStoreActions = keyof TStoreState<object>;
+// type TStoreState<T extends TState> =
+//   TStore<T> extends { getState: () => infer T } ? T : never;
+// type TStoreData<T extends TState> =
+//   TStoreState<T> extends { data: infer D } ? D : never;
 
 type WithSelectors<S> = S extends { getState: () => infer T }
   ? S & { use: { [K in keyof T]: () => T[K] } }
   : never;
 
-const isProducer = <T>(value: Updater<T>): value is Producer<T> =>
+const isProducer = <T>(value: Update<T>): value is Producer<T> =>
   typeof value === 'function';
 
 export const createSelectors = <S extends UseBoundStore<StoreApi<object>>>(
@@ -38,70 +39,60 @@ export const createSelectors = <S extends UseBoundStore<StoreApi<object>>>(
 export const createStore = <T extends TState>(initialState: T) =>
   create(
     immer(
-      combine(initialState, (set, get) => ({
-        setState: (nextState: Partial<T>) => {
-          set(() => nextState);
+      combine({ data: initialState }, (set, get) => ({
+        setData: (nextState: T) => {
+          set({ data: nextState });
         },
-        updateField: <K extends keyof T>(key: K, value: Updater<T[K]>) => {
-          set((draft: Draft<T>) => {
-            if (isProducer(value) && key in draft) {
-              return {
-                [key]: value(castDraft(get()[key])),
-              };
-            }
-            return {
-              [key]: value,
-            };
+        updateField: <K extends keyof T>(key: K, update: Update<T[K]>) => {
+          set(draft => {
+            const data = get().data;
+            const nextValue = isProducer(update)
+              ? update(castDraft(data[key]))
+              : update;
+
+            (draft.data as T)[key] = nextValue;
           });
         },
       })),
     ),
   );
 
-export const createStoreHooks = <T extends TState>(
-  store: UseBoundStore<StoreApi<T>>,
-) => {
-  type TFieldName = keyof Omit<T, TStoreActions>;
+// TODO -> utils
+const getUpdatePath = (path: string) => {
+  const [index, key] = path.split('-').reverse();
+  return [Number(index), key] as const;
+};
+
+export const createStoreHooks = <T extends TState>(store: TStore<T>) => {
+  type TFieldName = keyof T;
+  type TArrayFieldNames = TFieldName & FilterKeys<Required<T>, any[]>;
+
   const useField = <K extends TFieldName>(field: K, useShallow = true) => {
     const prev = useRef<T[K]>(void 0);
-    const value = store((state: T) => {
-      const next = state[field];
+    const value = store(state => {
+      const next = state.data[field];
       if (!useShallow) {
         return next;
       }
       return shallow(prev.current, next) ? prev.current : (prev.current = next);
     });
-    const updateField = store(state => (state as TStoreState<T>).updateField);
+    const updateField = store(state => state.updateField);
 
     return {
       value,
       update: useCallback(
-        (value: Updater<T[K]>) => updateField(field, value),
+        (value: Update<T[K]>) => updateField(field, value),
         [updateField, field],
       ),
     } as const;
   };
 
-  const getUpdatePath = (path: string) => {
-    const [index, key] = path.split('-').reverse();
-    return [Number(index), key] as const;
-  };
-
-  type TArrayFieldNames = TFieldName & FilterKeys<Required<T>, any[]>;
-  // type ArrayField<K extends TFieldName> = T[K] extends Iterable<infer U> ? U : never
   const useMultiValueField = <K extends TArrayFieldNames, TValue extends T[K]>(
     field: K,
     emptyItem: ElementOf<TValue>,
     useShallow?: true,
   ) => {
-    //type TFieldValue = T[K] extends any[] ? TFieldValue : never;
-    const { value, update } = useField<K>(field, useShallow) as {
-      value: (typeof emptyItem)[];
-      update: (value: Updater<ElementOf<TValue>[]>) => void;
-    };
-    // if (value && typeof value === 'object' &&  !('map' in value)) {
-    //   throw new Error('non-array field used with useMultiValueField')
-    // }
+    const { value, update } = useField<K>(field, useShallow);
 
     const onChangeItem = useCallback(
       (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -132,7 +123,7 @@ export const createStoreHooks = <T extends TState>(
     );
 
     const onAddItem = useCallback(() => {
-      update(prev => [...(prev || []), emptyItem] as T[K]);
+      update(prev => [...((prev || []) as T[K][]), emptyItem] as T[K]);
     }, [update, emptyItem]);
 
     return {

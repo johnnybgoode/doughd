@@ -1,14 +1,13 @@
-import { castDraft, type Draft } from 'immer';
+import { type Draft, type Producer, produce } from 'immer';
 import { type ChangeEvent, useCallback, useRef } from 'react';
 import { create, type StoreApi, type UseBoundStore } from 'zustand';
 import { combine } from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';
 import { shallow } from 'zustand/vanilla/shallow';
+import { isObject } from '@/utils/core';
 import type { ElementOf, FilterKeys } from '@/utils/types';
 
-type Producer<T> = (draft: Draft<T>) => T;
 type Update<T> = T | Producer<T>;
-
 type TState = object;
 type TStore<T extends TState> = ReturnType<typeof createStore<T>>;
 
@@ -39,15 +38,18 @@ export const createSelectors = <S extends UseBoundStore<StoreApi<object>>>(
 export const createStore = <T extends TState>(initialState: T) =>
   create(
     immer(
-      combine({ data: initialState }, (set, get) => ({
+      combine({ data: initialState }, set => ({
         setData: (nextState: T) => {
           set({ data: nextState });
         },
         updateField: <K extends keyof T>(key: K, update: Update<T[K]>) => {
           set(draft => {
-            const data = get().data;
+            if (!isObject(draft.data)) {
+              console.warn('Slice `data` is not an object');
+              return;
+            }
             const nextValue = isProducer(update)
-              ? update(castDraft(data[key]))
+              ? produce((draft.data as T)[key], update)
               : update;
 
             (draft.data as T)[key] = nextValue;
@@ -87,9 +89,9 @@ export const createStoreHooks = <T extends TState>(store: TStore<T>) => {
     } as const;
   };
 
-  const useMultiValueField = <K extends TArrayFieldNames, TValue extends T[K]>(
+  const useMultiValueField = <K extends TArrayFieldNames>(
     field: K,
-    emptyItem: ElementOf<TValue>,
+    emptyItem: ElementOf<T[K]>,
     useShallow?: true,
   ) => {
     const { value, update } = useField<K>(field, useShallow);
@@ -103,11 +105,8 @@ export const createStoreHooks = <T extends TState>(store: TStore<T>) => {
             : e.currentTarget.value;
 
         update(prev => {
-          if (
-            typeof prev === 'undefined' ||
-            (typeof prev === 'object' && prev === null)
-          ) {
-            return [emptyItem];
+          if (!Array.isArray(prev)) {
+            return [emptyItem] as Draft<T[K]>;
           }
           return prev.map((item, i) =>
             i === Number(index)
@@ -116,14 +115,19 @@ export const createStoreHooks = <T extends TState>(store: TStore<T>) => {
                   [key]: nextValue,
                 }
               : item,
-          );
+          ) as Draft<T[K]>;
         });
       },
       [update, emptyItem],
     );
 
     const onAddItem = useCallback(() => {
-      update(prev => [...((prev || []) as T[K][]), emptyItem] as T[K]);
+      update(prev => {
+        if (!Array.isArray(prev)) {
+          return [emptyItem] as Draft<T[K]>;
+        }
+        return [...prev, emptyItem] as Draft<T[K]>;
+      });
     }, [update, emptyItem]);
 
     return {

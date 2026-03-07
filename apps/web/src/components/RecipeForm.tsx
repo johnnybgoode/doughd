@@ -88,11 +88,16 @@ const IngredientsInput = () => {
   return (
     <>
       <List
-        className="mt-2 mb-0 ml-2"
+        className="mx-0 mt-2 mb-0"
         items={ingredients.map((ingredient, i) => (
-          <div className="flex" key={i}>
+          <Field
+            className="gap-2"
+            data-test-id={`group-step-${i + 1}`}
+            key={i}
+            orientation="horizontal"
+          >
             <Input
-              aria-label={`Ingredient ${i} name`}
+              aria-label={`Ingredient ${i + 1} name`}
               className="grow"
               defaultValue={ingredient.name}
               name={`name-${i}`}
@@ -100,7 +105,7 @@ const IngredientsInput = () => {
               type="text"
             />
             <Input
-              aria-label={`Ingredient ${i} amount`}
+              aria-label={`Ingredient ${i + 1} amount`}
               className="basis-[45%]"
               defaultValue={ingredient.value}
               name={`value-${i}`}
@@ -108,19 +113,21 @@ const IngredientsInput = () => {
               type="number"
             />
             <Input
-              aria-label={`Ingredient ${i} units`}
+              aria-label={`Ingredient ${i + 1} units`}
               className="basis-[25%]"
               defaultValue={ingredient.unit}
               name={`unit-${i}`}
               onChange={onChangeItem}
               type="text"
             />
-          </div>
+          </Field>
         ))}
       />
       <div className="flex justify-center">
         <Button
+          aria-label="add ingredient"
           className="size-9 rounded-full"
+          data-test-id="btn-add-ingredient"
           disabled={hasEmptyLastItem}
           onClick={onAddItem}
           variant="outline-primary"
@@ -147,11 +154,15 @@ const StepsInput = () => {
   return (
     <>
       {steps.map((step, idx) => (
-        <FieldGroup className="gap-3" key={idx}>
+        <FieldGroup
+          className="gap-3"
+          data-test-id={`group-step-${idx}`}
+          key={idx}
+        >
           <Field orientation="horizontal">
             <FieldLabel className="flex-no-wrap">{`${idx + 1}`}</FieldLabel>
             <Input
-              aria-label={`Step ${idx} name`}
+              aria-label={`Step ${idx + 1} name`}
               defaultValue={step.title}
               name={`title-${idx}`}
               onChange={onChangeItem}
@@ -160,7 +171,7 @@ const StepsInput = () => {
           </Field>
           <Field>
             <Textarea
-              aria-label={`Step ${idx} description`}
+              aria-label={`Step ${idx + 1} description`}
               defaultValue={step.description}
               name={`description-${idx}`}
               onChange={onChangeItem}
@@ -169,9 +180,10 @@ const StepsInput = () => {
           <Field className="flex-wrap" orientation="horizontal">
             <FieldLabel className="basis-1">Time</FieldLabel>
             <Input
-              aria-label={`Step ${idx} timer`}
+              aria-label={`Step ${idx + 1} timer`}
               className="basis-auto"
               defaultValue={step.time}
+              name={`time-${idx}`}
               onChange={onChangeItem}
               type="number"
             />
@@ -186,7 +198,9 @@ const StepsInput = () => {
       <Field>
         <div className="flex justify-center">
           <Button
+            aria-label="add step"
             className="size-9 rounded-full"
+            data-test-id="btn-add-step"
             disabled={hasEmptyLastItem}
             onClick={onAddItem}
             variant="outline-primary"

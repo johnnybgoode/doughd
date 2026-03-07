@@ -1,5 +1,5 @@
 import { type Draft, type Producer, produce } from 'immer';
-import { type ChangeEvent, useCallback, useRef } from 'react';
+import { useCallback, useRef } from 'react';
 import { create, type StoreApi, type UseBoundStore } from 'zustand';
 import { combine } from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';
@@ -59,12 +59,6 @@ export const createStore = <T extends TState>(initialState: T) =>
     ),
   );
 
-// TODO -> utils
-const getUpdatePath = (path: string) => {
-  const [index, key] = path.split('-').reverse();
-  return [Number(index), key] as const;
-};
-
 export const createStoreHooks = <T extends TState>(store: TStore<T>) => {
   type TFieldName = keyof T;
   type TArrayFieldNames = TFieldName & FilterKeys<Required<T>, any[]>;
@@ -97,14 +91,14 @@ export const createStoreHooks = <T extends TState>(store: TStore<T>) => {
     useShallow = true,
   ) => {
     const { value, update } = useField<K>(field, useShallow);
+    type UpdatePath = readonly [index: number, key: keyof ElementOf<T[K]>];
 
-    const onChangeItem = useCallback(
-      (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        const [index, key] = getUpdatePath(e.currentTarget.name);
-        const nextValue =
-          key === 'value'
-            ? Number(e.currentTarget.value)
-            : e.currentTarget.value;
+    const updateItem = useCallback(
+      <V extends ElementOf<T[K]>, P extends UpdatePath>(
+        value: V[P[1]],
+        updatePath: P,
+      ) => {
+        const [index, key] = updatePath;
 
         update(prev => {
           if (!Array.isArray(prev)) {
@@ -114,7 +108,7 @@ export const createStoreHooks = <T extends TState>(store: TStore<T>) => {
             i === Number(index)
               ? {
                   ...item,
-                  [key]: nextValue,
+                  [key]: value,
                 }
               : item,
           ) as Draft<T[K]>;
@@ -123,7 +117,7 @@ export const createStoreHooks = <T extends TState>(store: TStore<T>) => {
       [update, emptyItem],
     );
 
-    const onAddItem = useCallback(() => {
+    const addItem = useCallback(() => {
       update(prev => {
         if (!Array.isArray(prev)) {
           return [emptyItem] as Draft<T[K]>;
@@ -133,8 +127,8 @@ export const createStoreHooks = <T extends TState>(store: TStore<T>) => {
     }, [update, emptyItem]);
 
     return {
-      onChangeItem,
-      onAddItem,
+      updateItem,
+      addItem,
       value,
     };
   };

@@ -1,15 +1,7 @@
 import { act, renderHook } from '@testing-library/react';
-import type { ChangeEvent } from 'react';
 import { describe, expect, it } from 'vitest';
 import { createStore, createStoreHooks } from '@/lib/createStore';
-
-const mockChangeEvent = (
-  name: string,
-  value: string,
-): ChangeEvent<HTMLInputElement> =>
-  ({
-    currentTarget: { name, value },
-  }) as unknown as ChangeEvent<HTMLInputElement>;
+import { parseUpdatePath } from '@/utils/path';
 
 describe('createStoreHooks', () => {
   describe('useField', () => {
@@ -125,7 +117,7 @@ describe('createStoreHooks', () => {
       ]);
     });
 
-    it('onAddItem appends emptyItem to the array', () => {
+    it('addItem appends emptyItem to the array', () => {
       const store = createStore({
         ingredients: [{ name: 'flour', value: 100, unit: 'g' }],
       });
@@ -135,7 +127,7 @@ describe('createStoreHooks', () => {
         useMultiValueField('ingredients', emptyItem),
       );
       act(() => {
-        result.current.onAddItem();
+        result.current.addItem();
       });
       expect(result.current.value).toEqual([
         { name: 'flour', value: 100, unit: 'g' },
@@ -143,7 +135,7 @@ describe('createStoreHooks', () => {
       ]);
     });
 
-    it('onAddItem initializes to [emptyItem] when field is not an array', () => {
+    it('addItem initializes to [emptyItem] when field is not an array', () => {
       const store = createStore({
         ingredients: null as unknown as {
           name: string;
@@ -157,12 +149,12 @@ describe('createStoreHooks', () => {
         useMultiValueField('ingredients', emptyItem),
       );
       act(() => {
-        result.current.onAddItem();
+        result.current.addItem();
       });
       expect(result.current.value).toEqual([{ name: '', value: 0, unit: '' }]);
     });
 
-    it('onChangeItem updates a text field of the item at the given index', () => {
+    it('updateItem updates a text field of the item at the given index', () => {
       const store = createStore({
         ingredients: [
           { name: 'flour', value: 100, unit: 'g' },
@@ -174,7 +166,10 @@ describe('createStoreHooks', () => {
         useMultiValueField('ingredients', { name: '', value: 0, unit: '' }),
       );
       act(() => {
-        result.current.onChangeItem(mockChangeEvent('name-1', 'salt'));
+        result.current.updateItem(
+          'salt',
+          parseUpdatePath<{ name: string }[]>('name-1'),
+        );
       });
       expect(result.current.value[1]).toEqual({
         name: 'salt',
@@ -183,26 +178,7 @@ describe('createStoreHooks', () => {
       });
     });
 
-    it('onChangeItem converts the "value" key field to a Number', () => {
-      const store = createStore({
-        ingredients: [{ name: 'flour', value: 100, unit: 'g' }],
-      });
-      const { useMultiValueField } = createStoreHooks(store);
-      const { result } = renderHook(() =>
-        useMultiValueField('ingredients', { name: '', value: 0, unit: '' }),
-      );
-      act(() => {
-        result.current.onChangeItem(mockChangeEvent('value-0', '250'));
-      });
-      expect(result.current.value[0]).toEqual({
-        name: 'flour',
-        value: 250,
-        unit: 'g',
-      });
-      expect(typeof result.current.value[0].value).toBe('number');
-    });
-
-    it('onChangeItem only mutates the targeted item', () => {
+    it('updateItem only mutates the targeted item', () => {
       const store = createStore({
         steps: [
           { title: 'Mix', description: 'Mix ingredients', time: 5 },
@@ -215,7 +191,10 @@ describe('createStoreHooks', () => {
         useMultiValueField('steps', emptyItem),
       );
       act(() => {
-        result.current.onChangeItem(mockChangeEvent('title-0', 'Stir'));
+        result.current.updateItem(
+          'Stir',
+          parseUpdatePath<{ title: string }[]>('title-0'),
+        );
       });
       expect(result.current.value[0].title).toBe('Stir');
       expect(result.current.value[1]).toEqual({
@@ -225,7 +204,7 @@ describe('createStoreHooks', () => {
       });
     });
 
-    it('onChangeItem handles multi-segment names (key-index format)', () => {
+    it('updateItem handles multi-segment names (key-index format)', () => {
       const store = createStore({
         steps: [{ title: 'Mix', description: 'desc', time: 0 }],
       });
@@ -233,10 +212,10 @@ describe('createStoreHooks', () => {
       const { result } = renderHook(() =>
         useMultiValueField('steps', { title: '', description: '', time: 0 }),
       );
-      // name "description-0": key=description, index=0
       act(() => {
-        result.current.onChangeItem(
-          mockChangeEvent('description-0', 'New description'),
+        result.current.updateItem(
+          'New description',
+          parseUpdatePath<{ description: string }[]>('description-0'),
         );
       });
       expect(result.current.value[0].description).toBe('New description');

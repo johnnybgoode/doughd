@@ -16,9 +16,10 @@ import { Textarea } from '@repo/ui/components/textarea';
 import { Heading, List } from '@repo/ui/components/typography';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { PlusIcon } from 'lucide-react';
-import { useId, useMemo } from 'react';
+import { type ChangeEvent, useCallback, useId, useMemo } from 'react';
 import { useParams } from 'react-router';
 import { recipeHooks, recipeQueries, useRecipeStore } from '@/data/recipe';
+import { parseUpdatePath } from '@/utils/path';
 import { RecipeLayout } from './RecipeLayout';
 
 const useHasEmptyLastItem = (items: Record<string, any>[]) => {
@@ -76,14 +77,23 @@ const CreditInput = () => {
 const IngredientsInput = () => {
   const {
     value: ingredients,
-    onAddItem,
-    onChangeItem,
+    addItem,
+    updateItem,
   } = recipeHooks.useMultiValueField(
     'ingredients',
     { name: '', value: 0, unit: '' },
     false,
   );
   const hasEmptyLastItem = useHasEmptyLastItem(ingredients);
+  const onChangeItem = useCallback(
+    ({ currentTarget }: ChangeEvent<HTMLInputElement>) => {
+      updateItem(
+        currentTarget.value,
+        parseUpdatePath<typeof ingredients>(currentTarget.name),
+      );
+    },
+    [updateItem],
+  );
 
   return (
     <>
@@ -129,7 +139,7 @@ const IngredientsInput = () => {
           className="size-9 rounded-full"
           data-test-id="btn-add-ingredient"
           disabled={hasEmptyLastItem}
-          onClick={onAddItem}
+          onClick={addItem}
           variant="outline-primary"
         >
           <PlusIcon className="stroke-3" />
@@ -142,14 +152,25 @@ const IngredientsInput = () => {
 const StepsInput = () => {
   const {
     value: steps,
-    onAddItem,
-    onChangeItem,
+    addItem,
+    updateItem,
   } = recipeHooks.useMultiValueField('steps', {
     title: '',
     description: '',
     time: 0,
   });
   const hasEmptyLastItem = useHasEmptyLastItem(steps);
+  const onChangeItem = useCallback(
+    ({
+      currentTarget,
+    }: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+      updateItem(
+        currentTarget.value,
+        parseUpdatePath<typeof steps>(currentTarget.name),
+      );
+    },
+    [updateItem],
+  );
 
   return (
     <>
@@ -202,7 +223,7 @@ const StepsInput = () => {
             className="size-9 rounded-full"
             data-test-id="btn-add-step"
             disabled={hasEmptyLastItem}
-            onClick={onAddItem}
+            onClick={addItem}
             variant="outline-primary"
           >
             <PlusIcon className="stroke-3" />

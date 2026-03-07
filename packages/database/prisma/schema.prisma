@@ -32,8 +32,8 @@ model Recipe {
   slug          String    @unique
   credit        String?
   image         String?
-  portions      Json?
-  ingredients   Json?
-  steps         Json?
-  archived      Boolean  @default(false)
+  portions      Json      @default("{\"unit\": \"\", \"units\": \"\", \"value\": 0}")
+  ingredients   Json      @default("[{\"name\": \"\", \"unit\": \"\", \"value\": 0}]")
+  steps         Json      @default("[{\"title\": \"\", \"description\": \"\", \"time\": 0}]")
+  archived      Boolean   @default(false)
 }

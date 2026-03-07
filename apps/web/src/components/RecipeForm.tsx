@@ -11,58 +11,78 @@ import {
 } from '@repo/ui/components/field';
 import { Image } from '@repo/ui/components/image';
 import { Input } from '@repo/ui/components/input';
+import { Label } from '@repo/ui/components/label';
 import { Textarea } from '@repo/ui/components/textarea';
 import { Heading, List } from '@repo/ui/components/typography';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { PlusIcon } from 'lucide-react';
-import { useMemo } from 'react';
+import { useId, useMemo } from 'react';
 import { useParams } from 'react-router';
 import { recipeHooks, recipeQueries, useRecipeStore } from '@/data/recipe';
 import { RecipeLayout } from './RecipeLayout';
-import { Label } from '@repo/ui/components/label';
 
 const useHasEmptyLastItem = (items: Record<string, any>[]) => {
-  return useMemo(() => {
-    if (!items.length) {
-      return false;
-    }
-    return Object.values(items[items.length - 1]).some(v => !v);
-  }, [items]);
+  return useMemo(
+    () =>
+      !!items.length && Object.values(items[items.length - 1]).some(v => !v),
+    [items],
+  );
 };
 
 const TitleInput = () => {
   const { value: title, update } = recipeHooks.useField('title');
+  const inputId = useId();
   return (
-    <Input
-      className="w-full text-center"
-      defaultValue={title}
-      name="title"
-      onInput={e => update(e.currentTarget.value)}
-      use="transparent"
-    />
+    <>
+      <Label className="hidden" htmlFor={inputId}>
+        Title
+      </Label>
+      <Heading className="mb-2" level="1">
+        <Input
+          className="w-full text-center"
+          defaultValue={title}
+          id={inputId}
+          name="title"
+          onInput={e => update(e.currentTarget.value)}
+          type="text"
+          use="transparent"
+        />
+      </Heading>
+    </>
   );
 };
 
 const CreditInput = () => {
   const { value: credit, update: updateField } = recipeHooks.useField('credit');
+  const inputId = useId();
   return (
-    <Input
-      className="px-4 py-1 text-center leading-2"
-      defaultValue={credit || undefined}
-      name="credit"
-      onInput={e => updateField(e.currentTarget.value)}
-      use="transparent"
-    />
+    <>
+      <Label className="hidden" htmlFor={inputId}>
+        Credit
+      </Label>
+      <Input
+        className="px-4 py-1 text-center leading-2"
+        defaultValue={credit || undefined}
+        id={inputId}
+        name="credit"
+        onInput={e => updateField(e.currentTarget.value)}
+        type="text"
+        use="transparent"
+      />
+    </>
   );
 };
 
 const IngredientsInput = () => {
-  const emptyItem = { name: '', value: 0, unit: '' };
-  const { value, onAddItem, onChangeItem } = recipeHooks.useMultiValueField(
+  const {
+    value: ingredients,
+    onAddItem,
+    onChangeItem,
+  } = recipeHooks.useMultiValueField(
     'ingredients',
-    emptyItem,
+    { name: '', value: 0, unit: '' },
+    false,
   );
-  const ingredients = value && value.length ? value : [emptyItem];
   const hasEmptyLastItem = useHasEmptyLastItem(ingredients);
 
   return (
@@ -72,12 +92,15 @@ const IngredientsInput = () => {
         items={ingredients.map((ingredient, i) => (
           <div className="flex" key={i}>
             <Input
+              aria-label={`Ingredient ${i} name`}
               className="grow"
               defaultValue={ingredient.name}
               name={`name-${i}`}
               onChange={onChangeItem}
+              type="text"
             />
             <Input
+              aria-label={`Ingredient ${i} amount`}
               className="basis-[45%]"
               defaultValue={ingredient.value}
               name={`value-${i}`}
@@ -85,10 +108,12 @@ const IngredientsInput = () => {
               type="number"
             />
             <Input
+              aria-label={`Ingredient ${i} units`}
               className="basis-[25%]"
               defaultValue={ingredient.unit}
               name={`unit-${i}`}
               onChange={onChangeItem}
+              type="text"
             />
           </div>
         ))}
@@ -108,16 +133,15 @@ const IngredientsInput = () => {
 };
 
 const StepsInput = () => {
-  const emptyItem = {
+  const {
+    value: steps,
+    onAddItem,
+    onChangeItem,
+  } = recipeHooks.useMultiValueField('steps', {
     title: '',
     description: '',
     time: 0,
-  };
-  const { value, onAddItem, onChangeItem } = recipeHooks.useMultiValueField(
-    'steps',
-    emptyItem,
-  );
-  const steps = value && value.length ? value : [emptyItem];
+  });
   const hasEmptyLastItem = useHasEmptyLastItem(steps);
 
   return (
@@ -127,13 +151,16 @@ const StepsInput = () => {
           <Field orientation="horizontal">
             <FieldLabel className="flex-no-wrap">{`${idx + 1}`}</FieldLabel>
             <Input
+              aria-label={`Step ${idx} name`}
               defaultValue={step.title}
               name={`title-${idx}`}
               onChange={onChangeItem}
+              type="text"
             />
           </Field>
           <Field>
             <Textarea
+              aria-label={`Step ${idx} description`}
               defaultValue={step.description}
               name={`description-${idx}`}
               onChange={onChangeItem}
@@ -142,9 +169,11 @@ const StepsInput = () => {
           <Field className="flex-wrap" orientation="horizontal">
             <FieldLabel className="basis-1">Time</FieldLabel>
             <Input
+              aria-label={`Step ${idx} timer`}
               className="basis-auto"
               defaultValue={step.time}
               onChange={onChangeItem}
+              type="number"
             />
             <FieldDescription className="basis-full">
               Time in minutes to wait before starting the next step. Setting a
@@ -179,9 +208,7 @@ const RecipeForm = ({ recipe }: { recipe: RecipePureType | null }) => {
         )}
       </RecipeLayout.Slot>
       <RecipeLayout.Slot name="Title">
-        <Heading className="mb-2" level="1">
-          <TitleInput />
-        </Heading>
+        <TitleInput />
       </RecipeLayout.Slot>
       <RecipeLayout.Slot name="Credit">
         <CreditInput />

@@ -38,9 +38,9 @@ export const makeRecipe = <T extends Partial<RecipeInputType & { id: number }>>(
     title: 'My recipe',
     slug: 'my-recipe',
     credit: '',
-    portions: {},
-    ingredients: [],
-    steps: [],
+    portions: { value: 0, unit: '', units: '' },
+    ingredients: [{ name: '', value: 0, unit: '' }],
+    steps: [{ title: '', description: '', time: 0 }],
     archived: false,
     ...recipe,
   }) as RecipePureType;

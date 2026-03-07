@@ -1,7 +1,5 @@
-// export * from '../generated/prisma/zod/schemas'
 import z from 'zod';
 import {
-  NullableJsonNullValueInputSchema,
   type RecipeInputType as RecipeInputZodType,
   type RecipePureType as RecipePureZodType,
   RecipeUncheckedCreateInputObjectZodSchema as RecipeUncheckedCreateInputObject,
@@ -32,13 +30,9 @@ export const StepsSchema = z.array(Step);
 export type StepsType = z.infer<typeof StepsSchema>;
 
 const jsonFieldSchemas = {
-  ingredients: z
-    .union([NullableJsonNullValueInputSchema, IngredientsSchema])
-    .optional(),
-  portions: z
-    .union([NullableJsonNullValueInputSchema, PortionsSchema])
-    .optional(),
-  steps: z.union([NullableJsonNullValueInputSchema, StepsSchema]).optional(),
+  ingredients: IngredientSchema,
+  portions: PortionsSchema,
+  steps: StepsSchema,
 };
 
 export const RecipeUncheckedCreateInputObjectZodSchema =
@@ -50,13 +44,16 @@ export const RecipeUncheckedUpdateInputObjectZodSchema =
   });
 
 type RecipeJsonFields = {
-  ingredients?: IngredientsType;
-  portions?: PortionsType;
-  steps?: StepsType;
+  ingredients: IngredientsType;
+  portions: PortionsType;
+  steps: StepsType;
 };
 
-export type RecipePureType = Omit<RecipePureZodType, keyof RecipeJsonFields> &
-  RecipeJsonFields;
+export type RecipePureType = Omit<RecipePureZodType, keyof RecipeJsonFields> & {
+  [K in keyof RecipeJsonFields]: RecipeJsonFields[K];
+};
 
-export type RecipeInputType = Omit<RecipeInputZodType, keyof RecipeJsonFields> &
-  RecipeJsonFields;
+export type RecipeInputType = Omit<
+  RecipeInputZodType,
+  keyof RecipeJsonFields
+> & { [K in keyof RecipeJsonFields]: RecipeJsonFields[K] };

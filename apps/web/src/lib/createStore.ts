@@ -76,7 +76,9 @@ export const createStoreHooks = <T extends TState>(store: TStore<T>) => {
       if (!useShallow) {
         return next;
       }
-      return shallow(prev.current, next) ? prev.current : (prev.current = next);
+      return shallow(prev.current, next)
+        ? (prev.current as T[K])
+        : (prev.current = next);
     });
     const updateField = store(state => state.updateField);
 
@@ -92,7 +94,7 @@ export const createStoreHooks = <T extends TState>(store: TStore<T>) => {
   const useMultiValueField = <K extends TArrayFieldNames>(
     field: K,
     emptyItem: ElementOf<T[K]>,
-    useShallow?: true,
+    useShallow = true,
   ) => {
     const { value, update } = useField<K>(field, useShallow);
 

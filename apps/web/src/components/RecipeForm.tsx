@@ -16,10 +16,9 @@ import { Textarea } from '@repo/ui/components/textarea';
 import { Heading, List } from '@repo/ui/components/typography';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { PlusIcon } from 'lucide-react';
-import { type ChangeEvent, useCallback, useId, useMemo } from 'react';
+import { useId, useMemo } from 'react';
 import { useParams } from 'react-router';
 import { recipeHooks, recipeQueries, useRecipeStore } from '@/data/recipe';
-import { parseUpdatePath } from '@/utils/path';
 import { RecipeLayout } from './RecipeLayout';
 
 const useHasEmptyLastItem = (items: Record<string, any>[]) => {
@@ -85,15 +84,6 @@ const IngredientsInput = () => {
     false,
   );
   const hasEmptyLastItem = useHasEmptyLastItem(ingredients);
-  const onChangeItem = useCallback(
-    ({ currentTarget }: ChangeEvent<HTMLInputElement>) => {
-      updateItem(
-        currentTarget.value,
-        parseUpdatePath<typeof ingredients>(currentTarget.name),
-      );
-    },
-    [updateItem],
-  );
 
   return (
     <>
@@ -111,7 +101,9 @@ const IngredientsInput = () => {
               className="grow"
               defaultValue={ingredient.name}
               name={`name-${i}`}
-              onChange={onChangeItem}
+              onChange={({ currentTarget }) =>
+                updateItem(currentTarget.value, `name-${i}`)
+              }
               type="text"
             />
             <Input
@@ -119,7 +111,9 @@ const IngredientsInput = () => {
               className="basis-[45%]"
               defaultValue={ingredient.value}
               name={`value-${i}`}
-              onChange={onChangeItem}
+              onChange={({ currentTarget }) =>
+                updateItem(Number(currentTarget.value), `value-${i}`)
+              }
               type="number"
             />
             <Input
@@ -127,7 +121,9 @@ const IngredientsInput = () => {
               className="basis-[25%]"
               defaultValue={ingredient.unit}
               name={`unit-${i}`}
-              onChange={onChangeItem}
+              onChange={({ currentTarget }) =>
+                updateItem(currentTarget.value, `unit-${i}`)
+              }
               type="text"
             />
           </Field>
@@ -160,17 +156,6 @@ const StepsInput = () => {
     time: 0,
   });
   const hasEmptyLastItem = useHasEmptyLastItem(steps);
-  const onChangeItem = useCallback(
-    ({
-      currentTarget,
-    }: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-      updateItem(
-        currentTarget.value,
-        parseUpdatePath<typeof steps>(currentTarget.name),
-      );
-    },
-    [updateItem],
-  );
 
   return (
     <>
@@ -186,7 +171,9 @@ const StepsInput = () => {
               aria-label={`Step ${idx + 1} name`}
               defaultValue={step.title}
               name={`title-${idx}`}
-              onChange={onChangeItem}
+              onChange={({ currentTarget }) =>
+                updateItem(currentTarget.value, `title-${idx}`)
+              }
               type="text"
             />
           </Field>
@@ -195,7 +182,9 @@ const StepsInput = () => {
               aria-label={`Step ${idx + 1} description`}
               defaultValue={step.description}
               name={`description-${idx}`}
-              onChange={onChangeItem}
+              onChange={({ currentTarget }) =>
+                updateItem(currentTarget.value, `description-${idx}`)
+              }
             />
           </Field>
           <Field className="flex-wrap" orientation="horizontal">
@@ -205,7 +194,9 @@ const StepsInput = () => {
               className="basis-auto"
               defaultValue={step.time}
               name={`time-${idx}`}
-              onChange={onChangeItem}
+              onChange={({ currentTarget }) =>
+                updateItem(Number(currentTarget.value), `time-${idx}`)
+              }
               type="number"
             />
             <FieldDescription className="basis-full">

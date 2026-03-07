@@ -1,7 +1,6 @@
 import { act, renderHook } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import { createStore, createStoreHooks } from '@/lib/createStore';
-import { parseUpdatePath } from '@/utils/path';
 
 describe('createStoreHooks', () => {
   describe('useField', () => {
@@ -166,10 +165,7 @@ describe('createStoreHooks', () => {
         useMultiValueField('ingredients', { name: '', value: 0, unit: '' }),
       );
       act(() => {
-        result.current.updateItem(
-          'salt',
-          parseUpdatePath<{ name: string }[]>('name-1'),
-        );
+        result.current.updateItem('salt', 'name-1');
       });
       expect(result.current.value[1]).toEqual({
         name: 'salt',
@@ -191,10 +187,7 @@ describe('createStoreHooks', () => {
         useMultiValueField('steps', emptyItem),
       );
       act(() => {
-        result.current.updateItem(
-          'Stir',
-          parseUpdatePath<{ title: string }[]>('title-0'),
-        );
+        result.current.updateItem('Stir', 'title-0');
       });
       expect(result.current.value[0].title).toBe('Stir');
       expect(result.current.value[1]).toEqual({
@@ -213,10 +206,7 @@ describe('createStoreHooks', () => {
         useMultiValueField('steps', { title: '', description: '', time: 0 }),
       );
       act(() => {
-        result.current.updateItem(
-          'New description',
-          parseUpdatePath<{ description: string }[]>('description-0'),
-        );
+        result.current.updateItem('New description', 'description-0');
       });
       expect(result.current.value[0].description).toBe('New description');
     });

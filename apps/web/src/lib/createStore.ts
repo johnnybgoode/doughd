@@ -5,7 +5,7 @@ import { combine } from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';
 import { shallow } from 'zustand/vanilla/shallow';
 import { isObject } from '@/utils/core';
-import type { ElementOf, FilterKeys } from '@/utils/types';
+import type { ElementOf, FilterKeys, Split, StringKeys } from '@/utils/types';
 
 type Update<T> = T | Producer<T>;
 type TState = object;
@@ -91,14 +91,19 @@ export const createStoreHooks = <T extends TState>(store: TStore<T>) => {
     useShallow = true,
   ) => {
     const { value, update } = useField<K>(field, useShallow);
-    type UpdatePath = readonly [index: number, key: keyof ElementOf<T[K]>];
+    type UpdatePathStr<P extends ElementOf<T[K]>> =
+      `${StringKeys<P>}-${number}`;
 
     const updateItem = useCallback(
-      <V extends ElementOf<T[K]>, P extends UpdatePath>(
-        value: V[P[1]],
-        updatePath: P,
+      <
+        V extends ElementOf<T[K]>,
+        S extends UpdatePathStr<V>,
+        P extends Split<S, '-'>[0] & keyof V,
+      >(
+        value: V[P],
+        updatePath: S,
       ) => {
-        const [index, key] = updatePath;
+        const [key, index] = updatePath.split('-');
 
         update(prev => {
           if (!Array.isArray(prev)) {
